@@ -42,42 +42,84 @@ function animateParticles() {
     requestAnimationFrame(animateParticles);
 }
 
-// App State
+// App Variables
 let currentMood = "calm";
 let posts = [];
+let currentAudio = null;
+let currentTrackIndex = -1;
 
-// Sample Posts
-function createSamplePosts() {
-    posts = [
-        { id: 1, name: "Anonymous Star", text: "დღეს ძალიან მძიმე დღე მქონდა...", likes: 14, hugs: 8, mood: "sad" },
-        { id: 2, name: "Anonymous Cloud", text: "ვფიქრობ ყველაფერი გამოვა. დროა საჭირო.", likes: 23, hugs: 19, mood: "hopeful" }
-    ];
-    renderFeed();
-}
+// Music Tracks
+const musicTracks = [
+    { title: "Midnight Bloom", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", cover: "https://picsum.photos/id/1015/200/200" },
+    { title: "Soft Rain", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3", cover: "https://picsum.photos/id/102/200/200" },
+    { title: "Starry Night", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3", cover: "https://picsum.photos/id/133/200/200" },
+    { title: "Gentle Dreams", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3", cover: "https://picsum.photos/id/201/200/200" }
+];
 
-function renderFeed() {
-    const feed = document.getElementById('feed');
-    feed.innerHTML = '';
-    posts.forEach(post => {
-        const postEl = document.createElement('div');
-        postEl.className = 'post-card fade-in';
-        postEl.innerHTML = `
-            <div class="post-header">
-                <span class="anon-name">${post.name}</span>
-                <span style="margin-left: auto; opacity: 0.6;">${post.mood}</span>
+// Render Music List
+function renderMusicList() {
+    const container = document.getElementById('musicList');
+    container.innerHTML = '';
+
+    musicTracks.forEach((track, index) => {
+        const isActive = index === currentTrackIndex;
+        const div = document.createElement('div');
+        div.className = `music-track ${isActive ? 'active' : ''}`;
+        div.innerHTML = `
+            <img src="${track.cover}" alt="${track.title}">
+            <div class="track-info">
+                <div class="track-title">${track.title}</div>
             </div>
-            <div class="post-text">${post.text}</div>
-            <div class="post-actions">
-                <button class="action-btn" onclick="likePost(${post.id})">❤️ <span>${post.likes}</span></button>
-                <button class="action-btn" onclick="commentPost(${post.id})">💬</button>
-                <button class="action-btn" onclick="hugPost(${post.id})">🫂 <span>${post.hugs}</span></button>
+            <div class="play-btn" onclick="playTrack(${index}); event.stopImmediatePropagation()">
+                ${isActive ? '❚❚' : '▶'}
             </div>
+            ${isActive ? `<div class="equalizer"><span></span><span></span><span></span><span></span></div>` : ''}
         `;
-        feed.appendChild(postEl);
+        container.appendChild(div);
     });
 }
 
-// Post Functions
+// Play Track
+function playTrack(index) {
+    const track = musicTracks[index];
+
+    if (currentTrackIndex === index && currentAudio) {
+        currentAudio.pause();
+        currentTrackIndex = -1;
+        renderMusicList();
+        return;
+    }
+
+    if (currentAudio) currentAudio.pause();
+
+    currentAudio = new Audio(track.src);
+    currentAudio.volume = 0.75;
+
+    currentAudio.play().then(() => {
+        currentTrackIndex = index;
+        renderMusicList();
+    }).catch(err => {
+        console.error("Music Error:", err);
+        alert("მუსიკის დაკვრა ვერ მოხერხდა. სცადე თავიდან.");
+    });
+
+    currentAudio.onended = () => {
+        currentTrackIndex = -1;
+        renderMusicList();
+    };
+}
+
+function toggleMusicPanel() {
+    const panel = document.getElementById('musicPanel');
+    if (panel.style.display === 'block') {
+        panel.style.display = 'none';
+    } else {
+        panel.style.display = 'block';
+        renderMusicList();
+    }
+}
+
+// Other Functions
 function publishPost() {
     const text = document.getElementById('postText').value.trim();
     if (!text) return;
@@ -95,7 +137,7 @@ function publishPost() {
     renderFeed();
 
     const thank = document.createElement('div');
-    thank.style.cssText = `position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(139,92,246,0.95); color:white; padding:30px 50px; border-radius:30px; z-index:1000; box-shadow:0 0 60px #ff8ab5;`;
+    thank.style.cssText = `position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(139,92,246,0.95);color:white;padding:30px 50px;border-radius:30px;z-index:1000;box-shadow:0 0 60px #ff8ab5;`;
     thank.textContent = 'Thank you for sharing 💜';
     document.body.appendChild(thank);
     setTimeout(() => thank.remove(), 2500);
@@ -103,60 +145,43 @@ function publishPost() {
     document.getElementById('postText').value = '';
 }
 
-function likePost(id) { const p = posts.find(x => x.id === id); if(p) p.likes++; renderFeed(); }
-function hugPost(id) { const p = posts.find(x => x.id === id); if(p) p.hugs++; renderFeed(); }
-function commentPost(id) {
-    const comment = prompt("დაწერე შენი მხარდაჭერა:");
-    if(comment) alert("მადლობა შენი სიტყვებისთვის 💜");
+function renderFeed() {
+    const feed = document.getElementById('feed');
+    feed.innerHTML = '';
+    posts.forEach(post => {
+        const postEl = document.createElement('div');
+        postEl.className = 'post-card';
+        postEl.innerHTML = `
+            <div class="post-header"><span class="anon-name">${post.name}</span></div>
+            <div class="post-text">${post.text}</div>
+            <div class="post-actions">
+                <button class="action-btn" onclick="likePost(${post.id})">❤️ ${post.likes}</button>
+                <button class="action-btn" onclick="commentPost(${post.id})">💬</button>
+                <button class="action-btn" onclick="hugPost(${post.id})">🫂 ${post.hugs}</button>
+            </div>
+        `;
+        feed.appendChild(postEl);
+    });
 }
 
-// Mood
+function likePost(id) { const p = posts.find(x => x.id === id); if(p) p.likes++; renderFeed(); }
+function hugPost(id) { const p = posts.find(x => x.id === id); if(p) p.hugs++; renderFeed(); }
+function commentPost(id) { prompt("დაწერე მხარდაჭერა:"); }
+
 function setMood(el) {
     document.querySelectorAll('.mood-option').forEach(m => m.classList.remove('active'));
     el.classList.add('active');
     currentMood = el.dataset.mood;
 }
 
-// Music
-const musicTracks = [
-    { title: "Midnight Bloom", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", cover: "https://picsum.photos/200?random=1" },
-    { title: "Soft Rain", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3", cover: "https://picsum.photos/200?random=2" },
-    { title: "Starry Night", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-7.mp3", cover: "https://picsum.photos/200?random=3" },
-    { title: "Gentle Dreams", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3", cover: "https://picsum.photos/200?random=4" }
-];
-
-let currentAudio = null;
-
-function toggleMusicPanel() {
-    const panel = document.getElementById('musicPanel');
-    panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
-    if (panel.style.display === 'block') renderMusicList();
+function createSamplePosts() {
+    posts = [
+        { id: 1, name: "Anonymous Star", text: "დღეს ძალიან მძიმე დღე მქონდა...", likes: 14, hugs: 8, mood: "sad" },
+        { id: 2, name: "Anonymous Cloud", text: "ვფიქრობ ყველაფერი გამოვა...", likes: 23, hugs: 19, mood: "hopeful" }
+    ];
+    renderFeed();
 }
 
-function renderMusicList() {
-    const container = document.getElementById('musicList');
-    container.innerHTML = '';
-    musicTracks.forEach((track, i) => {
-        const div = document.createElement('div');
-        div.className = 'music-track';
-        div.innerHTML = `
-            <img src="${track.cover}">
-            <div style="flex:1;">
-                <div style="font-weight:500;">${track.title}</div>
-            </div>
-            <button onclick="playMusic(${i}); event.stopImmediatePropagation()" style="background:none;border:none;font-size:1.8rem;cursor:pointer;">▶</button>
-        `;
-        container.appendChild(div);
-    });
-}
-
-function playMusic(index) {
-    if (currentAudio) currentAudio.pause();
-    currentAudio = new Audio(musicTracks[index].src);
-    currentAudio.play();
-}
-
-// Enter App
 function enterApp() {
     document.getElementById('landing').style.display = 'none';
     document.getElementById('app').style.display = 'block';
