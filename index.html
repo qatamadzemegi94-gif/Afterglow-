@@ -22,15 +22,13 @@
 
     <!-- Main App -->
     <div id="app">
-        <!-- Header -->
         <header>
             <h2>Afterglow</h2>
             <div class="nav">
-                <div class="nav-item active" onclick="switchTab(0)">Home</div>
-                <div class="nav-item" onclick="switchTab(1)">Feed</div>
-                <div class="nav-item" onclick="switchTab(2)">My Space</div>
+                <div class="nav-item active">Home</div>
+                <div class="nav-item">Feed</div>
+                <div class="nav-item">My Space</div>
             </div>
-            <div class="music-icon" onclick="toggleMusic()">♪</div>
         </header>
 
         <!-- Mood Selector -->
@@ -42,36 +40,36 @@
             <div class="mood-option" data-mood="calm" onclick="setMood(this)">🌙</div>
         </div>
 
+        <!-- Daily Quote -->
+        <div class="quote-section">
+            <p id="dailyQuote">"ჩვენ გისმენთ. შენ არ ხარ მარტო."</p>
+        </div>
+
         <!-- Post Form -->
         <div class="post-form">
-            <textarea id="postText" placeholder="Share your thoughts... რა გიჟდება გულს დღეს?"></textarea>
+            <textarea id="postText" placeholder="ჩვენ გისმენთ განკიცხვის გარეშე. შეგიძლია მოგვიყვე ყველაფერი... 💜"></textarea>
             <div class="post-actions">
                 <button onclick="publishPost()" class="post-btn">Share Anonymously 💜</button>
                 <span class="anonymous-label">Anonymous • Moon</span>
             </div>
         </div>
 
-        <!-- Daily Quote -->
-        <div class="quote-section">
-            <p id="dailyQuote">"You survived every hard day so far. You're stronger than you think."</p>
-        </div>
-
         <!-- Feed -->
         <div class="feed" id="feed"></div>
     </div>
 
-    <!-- Music Player -->
-    <div class="music-player" id="musicPlayer">
-        <div class="music-content">
-            <div onclick="togglePlay()" id="playBtn" class="play-btn">▶</div>
-            <div class="track-info">
-                <div class="track-name" id="trackName">Midnight Bloom</div>
-                <div class="track-genre">lofi • afterglow</div>
-            </div>
+    <!-- Floating Music Button -->
+    <div class="music-float-btn" onclick="toggleMusicPanel()">
+        ♫
+    </div>
+
+    <!-- Music Panel -->
+    <div class="music-panel" id="musicPanel">
+        <div class="music-header">
+            <h3>🎵 Lofi Vibes for You</h3>
+            <span onclick="toggleMusicPanel()" class="close-btn">✕</span>
         </div>
-        <audio id="audioPlayer" loop>
-            <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-        </audio>
+        <div id="musicList"></div>
     </div>
 
     <script src="script.js"></script>
