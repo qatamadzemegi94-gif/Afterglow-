@@ -1,1 +1,79 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Afterglow</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Particles Background -->
+    <canvas id="particles"></canvas>
 
+    <!-- Landing Page -->
+    <div id="landing">
+        <div class="container">
+            <h1 class="logo">AFTERGLOW</h1>
+            <p class="tagline">Talk Without Judgment</p>
+            <p class="subtitle">ადგილი, სადაც შეგიძლია გულწრფელად ილაპარაკო ✨</p>
+            <button class="glow-btn" onclick="enterApp()">Ready?</button>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="app">
+        <!-- Header -->
+        <header>
+            <h2>Afterglow</h2>
+            <div class="nav">
+                <div class="nav-item active" onclick="switchTab(0)">Home</div>
+                <div class="nav-item" onclick="switchTab(1)">Feed</div>
+                <div class="nav-item" onclick="switchTab(2)">My Space</div>
+            </div>
+            <div class="music-icon" onclick="toggleMusic()">♪</div>
+        </header>
+
+        <!-- Mood Selector -->
+        <div class="mood-selector">
+            <div class="mood-option" data-mood="hopeful" onclick="setMood(this)">🌈</div>
+            <div class="mood-option" data-mood="sad" onclick="setMood(this)">😔</div>
+            <div class="mood-option" data-mood="angry" onclick="setMood(this)">😡</div>
+            <div class="mood-option" data-mood="overwhelmed" onclick="setMood(this)">😭</div>
+            <div class="mood-option" data-mood="calm" onclick="setMood(this)">🌙</div>
+        </div>
+
+        <!-- Post Form -->
+        <div class="post-form">
+            <textarea id="postText" placeholder="Share your thoughts... რა გიჟდება გულს დღეს?"></textarea>
+            <div class="post-actions">
+                <button onclick="publishPost()" class="post-btn">Share Anonymously 💜</button>
+                <span class="anonymous-label">Anonymous • Moon</span>
+            </div>
+        </div>
+
+        <!-- Daily Quote -->
+        <div class="quote-section">
+            <p id="dailyQuote">"You survived every hard day so far. You're stronger than you think."</p>
+        </div>
+
+        <!-- Feed -->
+        <div class="feed" id="feed"></div>
+    </div>
+
+    <!-- Music Player -->
+    <div class="music-player" id="musicPlayer">
+        <div class="music-content">
+            <div onclick="togglePlay()" id="playBtn" class="play-btn">▶</div>
+            <div class="track-info">
+                <div class="track-name" id="trackName">Midnight Bloom</div>
+                <div class="track-genre">lofi • afterglow</div>
+            </div>
+        </div>
+        <audio id="audioPlayer" loop>
+            <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
