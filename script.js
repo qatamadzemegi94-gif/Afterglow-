@@ -42,7 +42,7 @@ function animateParticles() {
     requestAnimationFrame(animateParticles);
 }
 
-// App Variables
+// App State
 let currentMood = "calm";
 let posts = [];
 let currentAudio = null;
@@ -56,17 +56,16 @@ const musicTracks = [
     { title: "Gentle Dreams", src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-8.mp3", cover: "https://picsum.photos/id/201/200/200" }
 ];
 
-// Render Music List
+// Render Music
 function renderMusicList() {
     const container = document.getElementById('musicList');
     container.innerHTML = '';
-
     musicTracks.forEach((track, index) => {
         const isActive = index === currentTrackIndex;
         const div = document.createElement('div');
         div.className = `music-track ${isActive ? 'active' : ''}`;
         div.innerHTML = `
-            <img src="${track.cover}" alt="${track.title}">
+            <img src="${track.cover}">
             <div class="track-info">
                 <div class="track-title">${track.title}</div>
             </div>
@@ -79,57 +78,44 @@ function renderMusicList() {
     });
 }
 
-// Play Track
 function playTrack(index) {
     const track = musicTracks[index];
-
     if (currentTrackIndex === index && currentAudio) {
         currentAudio.pause();
         currentTrackIndex = -1;
         renderMusicList();
         return;
     }
-
     if (currentAudio) currentAudio.pause();
-
     currentAudio = new Audio(track.src);
     currentAudio.volume = 0.75;
-
     currentAudio.play().then(() => {
         currentTrackIndex = index;
         renderMusicList();
-    }).catch(err => {
-        console.error("Music Error:", err);
-        alert("მუსიკის დაკვრა ვერ მოხერხდა. სცადე თავიდან.");
-    });
-
-    currentAudio.onended = () => {
-        currentTrackIndex = -1;
-        renderMusicList();
-    };
+    }).catch(() => alert("მუსიკის ჩატვირთვა ვერ მოხერხდა"));
+    currentAudio.onended = () => { currentTrackIndex = -1; renderMusicList(); };
 }
 
 function toggleMusicPanel() {
     const panel = document.getElementById('musicPanel');
-    if (panel.style.display === 'block') {
-        panel.style.display = 'none';
-    } else {
-        panel.style.display = 'block';
-        renderMusicList();
-    }
+    panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+    if (panel.style.display === 'block') renderMusicList();
 }
 
-// Other Functions
+// Post Functions
 function publishPost() {
     const text = document.getElementById('postText').value.trim();
     if (!text) return;
 
     const newPost = {
         id: Date.now(),
-        name: "Anonymous " + ["Moon", "Star", "Cloud", "Echo"][Math.floor(Math.random()*4)],
+        name: "Anonymous " + ["Moon", "Star", "Cloud", "Echo", "Nebula"][Math.floor(Math.random()*5)],
         text: text,
         likes: 0,
         hugs: 0,
+        liked: false,
+        hugged: false,
+        comments: [],
         mood: currentMood
     };
 
@@ -140,7 +126,7 @@ function publishPost() {
     thank.style.cssText = `position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(139,92,246,0.95);color:white;padding:30px 50px;border-radius:30px;z-index:1000;box-shadow:0 0 60px #ff8ab5;`;
     thank.textContent = 'Thank you for sharing 💜';
     document.body.appendChild(thank);
-    setTimeout(() => thank.remove(), 2500);
+    setTimeout(() => thank.remove(), 2200);
 
     document.getElementById('postText').value = '';
 }
@@ -148,25 +134,65 @@ function publishPost() {
 function renderFeed() {
     const feed = document.getElementById('feed');
     feed.innerHTML = '';
+
     posts.forEach(post => {
         const postEl = document.createElement('div');
         postEl.className = 'post-card';
         postEl.innerHTML = `
-            <div class="post-header"><span class="anon-name">${post.name}</span></div>
+            <div class="post-header">
+                <span class="anon-name">${post.name}</span>
+                <span style="margin-left:auto; opacity:0.6;">${post.mood}</span>
+            </div>
             <div class="post-text">${post.text}</div>
             <div class="post-actions">
-                <button class="action-btn" onclick="likePost(${post.id})">❤️ ${post.likes}</button>
-                <button class="action-btn" onclick="commentPost(${post.id})">💬</button>
-                <button class="action-btn" onclick="hugPost(${post.id})">🫂 ${post.hugs}</button>
+                <button class="action-btn ${post.liked ? 'used' : ''}" onclick="likePost(${post.id})">❤️ <span>${post.likes}</span></button>
+                <button class="action-btn" onclick="toggleCommentInput(${post.id})">💬 ${post.comments ? post.comments.length : 0}</button>
+                <button class="action-btn ${post.hugged ? 'used' : ''}" onclick="hugPost(${post.id})">🫂 <span>${post.hugs}</span></button>
+            </div>
+            <div class="comments-section" id="comments-${post.id}" style="display:none;">
+                <div id="comment-list-${post.id}"></div>
+                <input type="text" id="comment-input-${post.id}" placeholder="დაწერე კომენტარი..." onkeypress="if(event.key==='Enter') addComment(${post.id})">
             </div>
         `;
         feed.appendChild(postEl);
     });
 }
 
-function likePost(id) { const p = posts.find(x => x.id === id); if(p) p.likes++; renderFeed(); }
-function hugPost(id) { const p = posts.find(x => x.id === id); if(p) p.hugs++; renderFeed(); }
-function commentPost(id) { prompt("დაწერე მხარდაჭერა:"); }
+function likePost(id) {
+    const post = posts.find(p => p.id === id);
+    if (post && !post.liked) {
+        post.likes++;
+        post.liked = true;
+        renderFeed();
+    }
+}
+
+function hugPost(id) {
+    const post = posts.find(p => p.id === id);
+    if (post && !post.hugged) {
+        post.hugs++;
+        post.hugged = true;
+        renderFeed();
+    }
+}
+
+function toggleCommentInput(id) {
+    const section = document.getElementById(`comments-${id}`);
+    section.style.display = section.style.display === 'block' ? 'none' : 'block';
+}
+
+function addComment(postId) {
+    const input = document.getElementById(`comment-input-${postId}`);
+    const text = input.value.trim();
+    if (!text) return;
+
+    const post = posts.find(p => p.id === postId);
+    if (!post.comments) post.comments = [];
+    post.comments.push({ text: text, name: "Anonymous User" });
+
+    input.value = '';
+    renderFeed();
+}
 
 function setMood(el) {
     document.querySelectorAll('.mood-option').forEach(m => m.classList.remove('active'));
@@ -175,10 +201,17 @@ function setMood(el) {
 }
 
 function createSamplePosts() {
-    posts = [
-        { id: 1, name: "Anonymous Star", text: "დღეს ძალიან მძიმე დღე მქონდა...", likes: 14, hugs: 8, mood: "sad" },
-        { id: 2, name: "Anonymous Cloud", text: "ვფიქრობ ყველაფერი გამოვა...", likes: 23, hugs: 19, mood: "hopeful" }
-    ];
+    posts = [{
+        id: 1,
+        name: "Anonymous Star",
+        text: "დღეს ძალიან მძიმე დღე მქონდა...",
+        likes: 14,
+        hugs: 15,
+        liked: false,
+        hugged: false,
+        comments: [],
+        mood: "sad"
+    }];
     renderFeed();
 }
 
