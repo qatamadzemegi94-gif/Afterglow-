@@ -197,7 +197,57 @@ header h2 {
     box-shadow: 0 20px 40px rgba(139, 92, 246, 0.25);
 }
 
-/* Music Floating Button */
+.post-text {
+    line-height: 1.6;
+    margin: 15px 0;
+    font-size: 1.05rem;
+}
+
+.post-actions {
+    display: flex;
+    gap: 25px;
+    margin-top: 15px;
+}
+
+.action-btn {
+    background: none;
+    border: none;
+    color: #b8a6ff;
+    cursor: pointer;
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: 0.3s;
+}
+
+.action-btn:hover {
+    color: #ff8ab5;
+    transform: scale(1.15);
+}
+
+.action-btn.used {
+    color: #ff8ab5;
+    opacity: 0.7;
+    cursor: default;
+}
+
+/* Comments */
+.comments-section {
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.comment {
+    background: rgba(255,255,255,0.05);
+    padding: 10px 14px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+/* Music */
 .music-float-btn {
     position: fixed;
     bottom: 25px;
@@ -220,7 +270,6 @@ header h2 {
 
 .music-float-btn:hover { transform: scale(1.1) rotate(20deg); }
 
-/* Music Panel */
 .music-panel {
     position: fixed;
     bottom: 110px;
@@ -255,10 +304,7 @@ header h2 {
 
 .close-btn { cursor: pointer; font-size: 1.8rem; opacity: 0.8; }
 
-.music-list {
-    max-height: 65vh;
-    overflow-y: auto;
-}
+.music-list { max-height: 65vh; overflow-y: auto; }
 
 .music-track {
     display: flex;
