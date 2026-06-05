@@ -1,10 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap');
 
-:root {
-    --purple: #a855f7;
-    --pink: #ec4899;
-}
-
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
@@ -27,18 +22,10 @@ body {
     box-shadow: 0 0 40px rgba(168, 85, 247, 0.4);
 }
 
-.heart-liked {
-    color: #ec4899;
-    animation: pop 0.3s;
+#music-panel {
+    box-shadow: -15px 0 40px rgba(0, 0, 0, 0.6);
 }
 
-@keyframes pop {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.4); }
-    100% { transform: scale(1); }
-}
-
-.active-tab {
-    color: #c084fc;
-    border-bottom: 2px solid #c084fc;
+input[type="range"] {
+    accent-color: #c084fc;
 }
