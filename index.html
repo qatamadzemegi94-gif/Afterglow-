@@ -29,12 +29,35 @@
         
         <!-- HOME -->
         <div id="tab-0" class="tab-content">
-            <div class="text-center mb-12">
-                <h1 class="text-5xl font-semibold mb-4 text-purple-200">ჩვენ გისმენთ</h1>
-                <p class="text-2xl text-slate-400">შენ არ ხარ მარტო</p>
+            <!-- Welcome Section -->
+            <div class="text-center mb-16">
+                <h1 class="text-5xl md:text-6xl font-semibold mb-4 text-purple-200">ჩვენ გისმენთ</h1>
+                <p class="text-2xl text-slate-400 mb-12">შენ არ ხარ მარტო 💜</p>
+                
+                <!-- Motivational Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
+                    <div class="glass p-8 rounded-3xl text-center hover:scale-105 transition-all glow-card">
+                        <div class="text-4xl mb-4">✨</div>
+                        <p class="text-purple-300 font-medium">ყოველი დღე ახალი დასაწყისია</p>
+                    </div>
+                    <div class="glass p-8 rounded-3xl text-center hover:scale-105 transition-all glow-card">
+                        <div class="text-4xl mb-4">💜</div>
+                        <p class="text-purple-300 font-medium">შენი ისტორია მნიშვნელოვანია</p>
+                    </div>
+                    <div class="glass p-8 rounded-3xl text-center hover:scale-105 transition-all glow-card">
+                        <div class="text-4xl mb-4">🌙</div>
+                        <p class="text-purple-300 font-medium">შენ იმაზე ძლიერი ხარ, ვიდრე გგონია</p>
+                    </div>
+                    <div class="glass p-8 rounded-3xl text-center hover:scale-105 transition-all glow-card">
+                        <div class="text-4xl mb-4">⭐</div>
+                        <p class="text-purple-300 font-medium">დღეს შეგიძლია კიდევ ერთი ნაბიჯი გადადგა</p>
+                    </div>
+                </div>
             </div>
-            <div class="glass rounded-3xl p-8">
-                <textarea id="post-input" rows="5" class="w-full bg-[#1a1433] border border-purple-500/30 rounded-2xl p-6 text-lg placeholder-slate-400 focus:outline-none focus:border-purple-400" placeholder="რა გაწუხებს დღეს? რისი თქმა გინდა..."></textarea>
+
+            <!-- Post Form -->
+            <div class="glass rounded-3xl p-8 mb-12">
+                <textarea id="post-input" rows="5" class="w-full bg-[#1a1433] border border-purple-500/30 rounded-2xl p-6 text-lg placeholder-slate-400 focus:outline-none focus:border-purple-400 resize-none" placeholder="რა გაწუხებს დღეს? რისი თქმა გინდა, მაგრამ ვერავის ეუბნები..."></textarea>
                 <div class="flex justify-end mt-4">
                     <button onclick="publishPost()" class="px-10 py-3.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl font-medium text-lg hover:scale-105 transition-all">გაზიარება ანონიმურად</button>
                 </div>
@@ -54,7 +77,7 @@
         </div>
     </div>
 
-    <!-- Music Panel (მარტივი) -->
+    <!-- Music Panel -->
     <div id="music-panel" class="fixed right-0 top-0 h-full w-96 glass border-l border-purple-500/30 translate-x-full transition-all duration-300 z-[100]">
         <div class="p-6">
             <div class="flex justify-between mb-6">
