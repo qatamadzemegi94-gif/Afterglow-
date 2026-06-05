@@ -3,71 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Afterglow</title>
+    <title>Afterglow — შენი უსაფრთხო სივრცე</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <!-- Particles Background -->
-    <canvas id="particles"></canvas>
-
-    <!-- Landing Page -->
-    <div id="landing">
-        <div class="container">
-            <h1 class="logo">AFTERGLOW</h1>
-            <p class="tagline">Talk Without Judgment</p>
-            <p class="subtitle">ადგილი, სადაც შეგიძლია გულწრფელად ილაპარაკო ✨</p>
-            <button class="glow-btn" onclick="enterApp()">Ready?</button>
-        </div>
-    </div>
-
-    <!-- Main App -->
-    <div id="app">
-        <header>
-            <h2>Afterglow</h2>
-            <div class="nav">
-                <div class="nav-item active">Home</div>
-                <div class="nav-item">Feed</div>
-                <div class="nav-item">My Space</div>
+<body class="bg-[#0f0a1a] text-slate-200 min-h-screen">
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-50 glass border-b border-purple-500/20">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <h1 class="text-3xl font-bold tracking-tight text-purple-300">Afterglow</h1>
             </div>
-        </header>
-
-        <!-- Mood Selector -->
-        <div class="mood-selector">
-            <div class="mood-option" data-mood="hopeful" onclick="setMood(this)">🌈</div>
-            <div class="mood-option" data-mood="sad" onclick="setMood(this)">😔</div>
-            <div class="mood-option" data-mood="angry" onclick="setMood(this)">😡</div>
-            <div class="mood-option" data-mood="overwhelmed" onclick="setMood(this)">😭</div>
-            <div class="mood-option" data-mood="calm" onclick="setMood(this)">🌙</div>
+            <div class="flex gap-8 text-sm font-medium">
+                <a href="#" onclick="showTab('feed')" class="hover:text-purple-300 transition-colors active-tab">Feed</a>
+                <a href="#" onclick="showTab('myspace')" class="hover:text-purple-300 transition-colors">My Space</a>
+            </div>
+            <button onclick="toggleMusicPanel()" class="flex items-center gap-2 px-5 py-2.5 rounded-2xl glass hover:bg-purple-500/20 transition-all">
+                <i class="fas fa-music"></i> მუსიკა
+            </button>
         </div>
+    </nav>
 
-        <!-- Daily Quote -->
-        <div class="quote-section">
-            <p id="dailyQuote">"ჩვენ გისმენთ. შენ არ ხარ მარტო."</p>
+    <div class="pt-24 pb-12 max-w-7xl mx-auto px-6">
+        <!-- Hero -->
+        <div class="text-center mb-16">
+            <h1 class="text-5xl md:text-6xl font-semibold mb-4 text-purple-200">ჩვენ გისმენთ</h1>
+            <p class="text-2xl text-slate-400 mb-8">შენ არ ხარ მარტო</p>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+                <div class="glass p-6 rounded-3xl text-center hover:scale-105 transition-transform">
+                    <p class="text-purple-300">"ყოველი დღე ახალი დასაწყისია ✨"</p>
+                </div>
+                <div class="glass p-6 rounded-3xl text-center hover:scale-105 transition-transform">
+                    <p class="text-purple-300">"შენი ისტორია მნიშვნელოვანია 💜"</p>
+                </div>
+                <div class="glass p-6 rounded-3xl text-center hover:scale-105 transition-transform">
+                    <p class="text-purple-300">"შენ იმაზე ძლიერი ხარ ვიდრე გგონია 🌙"</p>
+                </div>
+                <div class="glass p-6 rounded-3xl text-center hover:scale-105 transition-transform">
+                    <p class="text-purple-300">"დღესაც შეგიძლია გაიღიმო ⭐"</p>
+                </div>
+            </div>
         </div>
 
         <!-- Post Form -->
-        <div class="post-form">
-            <textarea id="postText" placeholder="ჩვენ გისმენთ განკიცხვის გარეშე. შეგიძლია მოგვიყვე ყველაფერი... 💜"></textarea>
-            <div class="post-actions">
-                <button onclick="publishPost()" class="post-btn">Share Anonymously 💜</button>
-                <span class="anonymous-label">Anonymous • Moon</span>
+        <div class="glass rounded-3xl p-8 mb-12">
+            <textarea id="post-input" rows="4" class="w-full bg-[#1a1433] border border-purple-500/30 rounded-2xl p-6 text-lg placeholder-slate-400 focus:outline-none focus:border-purple-400" 
+                placeholder="რა გაწუხებს დღეს? რისი თქმა გინდა, მაგრამ ვერავის ეუბნები..."></textarea>
+            
+            <div class="flex justify-end mt-4">
+                <button onclick="publishPost()" class="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl font-medium hover:scale-105 transition-all">
+                    გაზიარება ანონიმურად
+                </button>
             </div>
         </div>
 
         <!-- Feed -->
-        <div class="feed" id="feed"></div>
+        <div id="feed-tab">
+            <h2 class="text-2xl font-semibold mb-6">Community Feed</h2>
+            <div id="feed" class="space-y-8"></div>
+        </div>
+
+        <!-- My Space -->
+        <div id="myspace-tab" class="hidden">
+            <h2 class="text-2xl font-semibold mb-6">ჩემი სივრცე</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass rounded-3xl p-6">
+                    <h3 class="text-lg mb-4">ჩემი პოსტები</h3>
+                    <div id="my-posts" class="space-y-4"></div>
+                </div>
+                <div class="glass rounded-3xl p-6">
+                    <h3 class="text-lg mb-4">ჩემი ლაიქები</h3>
+                    <div id="my-likes" class="space-y-3 text-sm"></div>
+                </div>
+                <div class="glass rounded-3xl p-6">
+                    <h3 class="text-lg mb-4">სტატისტიკა</h3>
+                    <div id="stats" class="space-y-4"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Floating Music Button -->
-    <div class="music-float-btn" onclick="toggleMusicPanel()">♫</div>
-
     <!-- Music Panel -->
-    <div class="music-panel" id="musicPanel">
-        <div class="music-header">
-            <h3>🎵 Afterglow Playlist</h3>
-            <span onclick="toggleMusicPanel()" class="close-btn">✕</span>
+    <div id="music-panel" class="fixed right-0 top-0 h-full w-96 glass border-l border-purple-500/30 translate-x-full transition-transform duration-300 z-[100] overflow-y-auto">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="text-xl font-medium">ღამის მეგობარი 🎵</h3>
+                <button onclick="toggleMusicPanel()" class="text-2xl">✕</button>
+            </div>
+            
+            <div id="now-playing" class="text-center mb-8">
+                <div class="w-40 h-40 mx-auto rounded-2xl bg-gradient-to-br from-purple-400 to-pink-400 mb-4 shadow-xl"></div>
+                <p id="song-title" class="font-medium">აირჩიე სიმღერა</p>
+                <p id="song-artist" class="text-sm text-slate-400">Afterglow Playlist</p>
+            </div>
+
+            <div class="space-y-2 mb-8" id="playlist"></div>
+
+            <div class="flex items-center gap-4">
+                <button onclick="prevTrack()" class="text-2xl"><i class="fas fa-backward"></i></button>
+                <button onclick="togglePlay()" id="play-btn" class="text-4xl"><i class="fas fa-play"></i></button>
+                <button onclick="nextTrack()" class="text-2xl"><i class="fas fa-forward"></i></button>
+            </div>
         </div>
-        <div id="musicList" class="music-list"></div>
     </div>
 
     <script src="script.js"></script>
