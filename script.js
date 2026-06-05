@@ -1,20 +1,23 @@
 let posts = JSON.parse(localStorage.getItem('afterglow_posts')) || [];
+let currentTab = 0;
+
+// ===================== NAVIGATION =====================
+function switchTab(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+    document.getElementById(`tab-${['home','feed','myspace'][tab]}`).classList.remove('hidden');
+    
+    document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+    document.getElementById(`nav-${['home','feed','myspace'][tab]}`).classList.add('active');
+}
 
 // ===================== MUSIC PLAYER =====================
 let currentTrackIndex = 0;
 let isPlaying = false;
 
 const playlist = [
-    {
-        title: "Calm Lo-Fi Beat",
-        artist: "Afterglow",
-        videoId: "YywWuTPoGqc"
-    },
-    {
-        title: "Dreamy Night",
-        artist: "Chillhop",
-        videoId: "0cHtUNmdq_c"
-    }
+    { title: "Lo-Fi Chill", artist: "Afterglow", videoId: "YywWuTPoGqc" },
+    { title: "Night Drive", artist: "Dreamwave", videoId: "0cHtUNmdq_c" }
 ];
 
 function toggleMusicPanel() {
@@ -24,19 +27,10 @@ function toggleMusicPanel() {
 function renderPlaylist() {
     const container = document.getElementById('playlist');
     container.innerHTML = '';
-
     playlist.forEach((track, i) => {
         const div = document.createElement('div');
-        div.className = `p-4 rounded-2xl cursor-pointer transition-all hover:bg-purple-500/10 ${i === currentTrackIndex ? 'bg-purple-500/20 border border-purple-400' : ''}`;
-        div.innerHTML = `
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-400 rounded-xl flex items-center justify-center text-xl">▶</div>
-                <div class="flex-1">
-                    <p class="font-medium text-sm">${track.title}</p>
-                    <p class="text-xs text-slate-400">${track.artist}</p>
-                </div>
-            </div>
-        `;
+        div.className = `p-4 rounded-2xl cursor-pointer transition-all ${i === currentTrackIndex ? 'bg-purple-600/30' : 'hover:bg-white/5'}`;
+        div.innerHTML = `<div class="flex items-center gap-4"><div class="text-2xl">▶</div><div><p class="font-medium">${track.title}</p><p class="text-sm text-slate-400">${track.artist}</p></div></div>`;
         div.onclick = () => playTrack(i);
         container.appendChild(div);
     });
@@ -45,35 +39,24 @@ function renderPlaylist() {
 function playTrack(index) {
     currentTrackIndex = index;
     const track = playlist[index];
-
     document.getElementById('current-title').textContent = track.title;
     document.getElementById('current-artist').textContent = track.artist;
 
-    const iframe = document.getElementById('youtube-player');
-    iframe.src = `https://www.youtube.com/embed/${track.videoId}?autoplay=1&rel=0`;
-
-    renderPlaylist();
+    const container = document.getElementById('now-playing');
+    container.innerHTML = `
+        <iframe width="100%" height="280" src="https://www.youtube.com/embed/${track.videoId}?autoplay=1" frameborder="0" allow="autoplay" allowfullscreen></iframe>
+        <p class="font-semibold text-lg mt-4">${track.title}</p>
+        <p class="text-slate-400">${track.artist}</p>
+    `;
     isPlaying = true;
-    document.getElementById('play-pause-btn').innerHTML = `<i class="fas fa-pause"></i>`;
+    document.getElementById('play-btn').innerHTML = `<i class="fas fa-pause"></i>`;
 }
 
-function togglePlay() {
-    isPlaying = !isPlaying;
-    const btn = document.getElementById('play-pause-btn');
-    btn.innerHTML = isPlaying ? `<i class="fas fa-pause"></i>` : `<i class="fas fa-play"></i>`;
-}
+function togglePlay() { isPlaying = !isPlaying; document.getElementById('play-btn').innerHTML = isPlaying ? `<i class="fas fa-pause"></i>` : `<i class="fas fa-play"></i>`; }
+function nextTrack() { currentTrackIndex = (currentTrackIndex + 1) % playlist.length; playTrack(currentTrackIndex); }
+function prevTrack() { currentTrackIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length; playTrack(currentTrackIndex); }
 
-function nextTrack() {
-    currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
-    playTrack(currentTrackIndex);
-}
-
-function prevTrack() {
-    currentTrackIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length;
-    playTrack(currentTrackIndex);
-}
-
-// ===================== POST SYSTEM =====================
+// ===================== POST FUNCTIONS =====================
 function publishPost() {
     const input = document.getElementById('post-input');
     if (!input.value.trim()) return;
@@ -96,7 +79,6 @@ function publishPost() {
 function toggleLike(id) {
     const post = posts.find(p => p.id === id);
     if (!post) return;
-
     const index = post.likedBy.indexOf('user');
     if (index > -1) {
         post.likedBy.splice(index, 1);
@@ -110,12 +92,11 @@ function toggleLike(id) {
 }
 
 function addComment(id) {
-    const text = prompt("დაწერე მხარდამჭერი კომენტარი:");
+    const text = prompt("დაწერე კომენტარი:");
     if (!text) return;
-
     const post = posts.find(p => p.id === id);
     if (post) {
-        post.comments.push({ id: Date.now(), text });
+        post.comments.push({id: Date.now(), text});
         localStorage.setItem('afterglow_posts', JSON.stringify(posts));
         renderFeed();
     }
@@ -132,7 +113,6 @@ function deletePost(id) {
 function renderFeed() {
     const container = document.getElementById('feed');
     container.innerHTML = '';
-
     posts.forEach(post => {
         const isLiked = post.likedBy.includes('user');
         const div = document.createElement('div');
@@ -145,19 +125,10 @@ function renderFeed() {
             <p class="text-lg leading-relaxed mb-6">${post.content}</p>
             <div class="flex items-center justify-between">
                 <div class="flex gap-6">
-                    <button onclick="toggleLike(${post.id})" class="flex items-center gap-2 text-2xl ${isLiked ? 'text-pink-500' : 'text-slate-400'}">
-                        ❤️ <span>${post.likes}</span>
-                    </button>
-                    <button onclick="addComment(${post.id})" class="flex items-center gap-2 text-2xl text-slate-400">
-                        💬 <span>${post.comments.length}</span>
-                    </button>
+                    <button onclick="toggleLike(${post.id})" class="flex items-center gap-2 text-2xl ${isLiked ? 'text-pink-500' : ''}">❤️ <span>${post.likes}</span></button>
+                    <button onclick="addComment(${post.id})" class="flex items-center gap-2 text-2xl">💬 <span>${post.comments.length}</span></button>
                 </div>
-                <button onclick="deletePost(${post.id})" class="text-red-400 hover:text-red-500">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-            <div class="mt-6 pt-4 border-t border-purple-500/20">
-                ${post.comments.map(c => `<div class="bg-[#1a1433] p-3 rounded-2xl text-sm mb-2">${c.text}</div>`).join('')}
+                <button onclick="deletePost(${post.id})" class="text-red-400 hover:text-red-500"><i class="fas fa-trash"></i></button>
             </div>
         `;
         container.appendChild(div);
@@ -172,13 +143,9 @@ function timeAgo(ts) {
     return Math.floor(diff/86400) + " დღის წინ";
 }
 
-function showTab(tab) {
-    document.getElementById('feed-tab').classList.toggle('hidden', tab !== 'feed');
-    document.getElementById('myspace-tab').classList.toggle('hidden', tab !== 'myspace');
-}
-
 // Initialize
 window.onload = () => {
+    switchTab(0); // Home
     renderFeed();
     renderPlaylist();
 };
