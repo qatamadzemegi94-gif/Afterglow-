@@ -25,7 +25,3 @@ body {
 #music-panel {
     box-shadow: -15px 0 40px rgba(0, 0, 0, 0.6);
 }
-
-input[type="range"] {
-    accent-color: #c084fc;
-}
