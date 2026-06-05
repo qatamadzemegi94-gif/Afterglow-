@@ -1,6 +1,6 @@
 let posts = JSON.parse(localStorage.getItem('afterglow_posts')) || [];
 
-// ===================== NAVIGATION =====================
+// Navigation
 function switchTab(tab) {
     document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
     document.getElementById(`tab-${tab}`).classList.remove('hidden');
@@ -13,7 +13,7 @@ function switchTab(tab) {
     if (tab === 2) renderMySpace();
 }
 
-// ===================== POST FUNCTIONS =====================
+// Post Functions
 function publishPost() {
     const input = document.getElementById('post-input');
     if (!input.value.trim()) return alert("დაწერე რამე...");
@@ -39,7 +39,6 @@ function publishPost() {
 function toggleLike(id) {
     const post = posts.find(p => p.id === id);
     if (!post) return;
-
     const index = post.likedBy.indexOf("user");
     if (index > -1) {
         post.likedBy.splice(index, 1);
@@ -56,10 +55,9 @@ function toggleLike(id) {
 function addComment(id) {
     const text = prompt("დაწერე კომენტარი:");
     if (!text) return;
-
     const post = posts.find(p => p.id === id);
     if (post) {
-        post.comments.push({ id: Date.now(), text: text });
+        post.comments.push({ id: Date.now(), text });
         localStorage.setItem('afterglow_posts', JSON.stringify(posts));
         renderFeed();
         renderMySpace();
@@ -67,25 +65,14 @@ function addComment(id) {
 }
 
 function deletePost(id) {
-    if (!confirm("ნამდვილად გსურთ პოსტის წაშლა?")) return;
-    
+    if (!confirm("წაიშალოს პოსტი?")) return;
     posts = posts.filter(p => p.id !== id);
     localStorage.setItem('afterglow_posts', JSON.stringify(posts));
     renderFeed();
     renderMySpace();
 }
 
-function deleteComment(postId, commentId) {
-    const post = posts.find(p => p.id === postId);
-    if (post) {
-        post.comments = post.comments.filter(c => c.id !== commentId);
-        localStorage.setItem('afterglow_posts', JSON.stringify(posts));
-        renderFeed();
-        renderMySpace();
-    }
-}
-
-// ===================== RENDER FUNCTIONS =====================
+// Render Functions
 function timeAgo(ts) {
     const diff = Math.floor((Date.now() - ts) / 1000);
     if (diff < 60) return "ახლახანს";
@@ -107,26 +94,9 @@ function renderFeed() {
                 <span>${timeAgo(post.timestamp)}</span>
             </div>
             <p class="text-lg leading-relaxed mb-6">${post.content}</p>
-            <div class="flex items-center justify-between">
-                <div class="flex gap-8 text-2xl">
-                    <button onclick="toggleLike(${post.id})" class="flex items-center gap-2 ${post.likedBy.includes('user') ? 'text-pink-500' : ''}">
-                        ❤️ <span>${post.likes}</span>
-                    </button>
-                    <button onclick="addComment(${post.id})" class="flex items-center gap-2">
-                        💬 <span>${post.comments.length}</span>
-                    </button>
-                </div>
-                <button onclick="deletePost(${post.id})" class="text-red-400 hover:text-red-500">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </div>
-            <div class="mt-6 border-t border-purple-500/20 pt-4">
-                ${post.comments.map(c => `
-                    <div class="bg-[#1a1433] p-4 rounded-2xl mb-3 flex justify-between items-start">
-                        <span>${c.text}</span>
-                        <button onclick="deleteComment(${post.id}, ${c.id})" class="text-red-400 text-sm">×</button>
-                    </div>
-                `).join('')}
+            <div class="flex gap-8 text-2xl">
+                <button onclick="toggleLike(${post.id})" class="flex items-center gap-2 ${post.likedBy.includes('user') ? 'text-pink-500' : ''}">❤️ <span>${post.likes}</span></button>
+                <button onclick="addComment(${post.id})" class="flex items-center gap-2">💬 <span>${post.comments.length}</span></button>
             </div>
         `;
         container.appendChild(div);
@@ -151,17 +121,16 @@ function renderMySpace() {
                 <span>${timeAgo(post.timestamp)}</span>
             </div>
             <p class="text-lg leading-relaxed mb-6">${post.content}</p>
-            <div class="flex gap-6 text-xl">
+            <div class="flex gap-6">
                 <span>❤️ ${post.likes}</span>
                 <span>💬 ${post.comments.length}</span>
             </div>
-            <button onclick="deletePost(${post.id})" class="mt-4 text-red-400 hover:text-red-500 text-sm">წაშლა</button>
+            <button onclick="deletePost(${post.id})" class="mt-4 text-red-400 hover:text-red-500">წაშლა</button>
         `;
         container.appendChild(div);
     });
 }
 
-// ===================== MUSIC =====================
 function toggleMusicPanel() {
     alert("🎵 მუსიკის პანელი მომავალ ვერსიაში გაუმჯობესდება");
 }
