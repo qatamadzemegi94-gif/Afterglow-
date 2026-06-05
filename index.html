@@ -6,42 +6,37 @@
     <title>Afterglow — შენი უსაფრთხო სივრცე</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-[#0a0714] text-slate-200 min-h-screen">
     <!-- Navbar -->
     <nav class="fixed top-0 w-full z-50 glass border-b border-purple-500/20">
         <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <h1 class="text-3xl font-bold tracking-tight text-purple-300">Afterglow</h1>
-            </div>
-            
+            <h1 class="text-3xl font-bold text-purple-300">Afterglow</h1>
             <div class="flex gap-10 text-base font-medium">
                 <a href="#" onclick="switchTab(0)" id="nav-0" class="nav-link active">Home</a>
                 <a href="#" onclick="switchTab(1)" id="nav-1" class="nav-link">Feed</a>
                 <a href="#" onclick="switchTab(2)" id="nav-2" class="nav-link">My Space</a>
             </div>
-            
-            <button onclick="toggleMusicPanel()" class="flex items-center gap-2 px-6 py-3 rounded-2xl glass hover:bg-purple-500/20 transition-all">
+            <button onclick="toggleMusicPanel()" class="flex items-center gap-2 px-6 py-3 rounded-2xl glass hover:bg-purple-500/20">
                 <i class="fas fa-music"></i> მუსიკა
             </button>
         </div>
     </nav>
 
-    <div class="pt-24 max-w-7xl mx-auto px-6">
+    <div class="pt-24 pb-12 max-w-7xl mx-auto px-6">
         
         <!-- HOME -->
         <div id="tab-0" class="tab-content">
-            <div class="text-center mb-16">
-                <h1 class="text-5xl md:text-6xl font-semibold mb-4 text-purple-200">ჩვენ გისმენთ</h1>
+            <div class="text-center mb-12">
+                <h1 class="text-5xl font-semibold mb-4 text-purple-200">ჩვენ გისმენთ</h1>
                 <p class="text-2xl text-slate-400">შენ არ ხარ მარტო</p>
             </div>
-
-            <div class="glass rounded-3xl p-8 mb-12">
-                <textarea id="post-input" rows="4" class="w-full bg-[#1a1433] border border-purple-500/30 rounded-2xl p-6 text-lg placeholder-slate-400 focus:outline-none focus:border-purple-400 resize-none" placeholder="რა გაწუხებს დღეს?..."></textarea>
+            <div class="glass rounded-3xl p-8">
+                <textarea id="post-input" rows="5" class="w-full bg-[#1a1433] border border-purple-500/30 rounded-2xl p-6 text-lg placeholder-slate-400 focus:outline-none focus:border-purple-400" placeholder="რა გაწუხებს დღეს? რისი თქმა გინდა..."></textarea>
                 <div class="flex justify-end mt-4">
-                    <button onclick="publishPost()" class="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl font-medium hover:scale-105 transition-all">გაზიარება ანონიმურად</button>
+                    <button onclick="publishPost()" class="px-10 py-3.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl font-medium text-lg hover:scale-105 transition-all">გაზიარება ანონიმურად</button>
                 </div>
             </div>
         </div>
@@ -55,35 +50,18 @@
         <!-- MY SPACE -->
         <div id="tab-2" class="tab-content hidden">
             <h2 class="text-3xl font-semibold mb-8">ჩემი სივრცე</h2>
-            <div class="glass rounded-3xl p-10 text-center">
-                <p class="text-xl text-slate-400">ჯერჯერობით პოსტები არ გაქვს</p>
-                <p class="text-sm text-slate-500 mt-4">გადადი Home-ზე და დაწერე პირველი აღსარება</p>
-            </div>
+            <div id="my-posts" class="space-y-8"></div>
         </div>
     </div>
 
-    <!-- Music Panel -->
-    <div id="music-panel" class="fixed right-0 top-0 h-full w-96 glass border-l border-purple-500/30 translate-x-full transition-all duration-300 z-[100] flex flex-col">
-        <div class="p-6 border-b border-purple-500/20">
-            <div class="flex justify-between items-center">
+    <!-- Music Panel (მარტივი) -->
+    <div id="music-panel" class="fixed right-0 top-0 h-full w-96 glass border-l border-purple-500/30 translate-x-full transition-all duration-300 z-[100]">
+        <div class="p-6">
+            <div class="flex justify-between mb-6">
                 <h3 class="text-xl font-medium">ღამის მეგობარი 🎵</h3>
-                <button onclick="toggleMusicPanel()" class="text-3xl text-slate-400 hover:text-white">✕</button>
+                <button onclick="toggleMusicPanel()" class="text-3xl">✕</button>
             </div>
-        </div>
-        <div class="p-6 flex-1 overflow-auto">
-            <div id="now-playing" class="text-center mb-8">
-                <div class="w-48 h-48 mx-auto rounded-3xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-6xl mb-6">🎧</div>
-                <p id="current-title" class="font-semibold text-lg">აირჩიე სიმღერა</p>
-                <p id="current-artist" class="text-slate-400">Afterglow Playlist</p>
-            </div>
-
-            <div class="flex justify-center gap-8 mb-8">
-                <button onclick="prevTrack()" class="text-3xl"><i class="fas fa-backward"></i></button>
-                <button onclick="togglePlay()" id="play-btn" class="text-6xl text-purple-400"><i class="fas fa-play"></i></button>
-                <button onclick="nextTrack()" class="text-3xl"><i class="fas fa-forward"></i></button>
-            </div>
-
-            <div id="playlist" class="space-y-3"></div>
+            <p class="text-slate-400 text-center">მომავალ ვერსიაში სრული პლეერი დაემატება</p>
         </div>
     </div>
 
