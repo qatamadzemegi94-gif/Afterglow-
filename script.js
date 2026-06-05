@@ -27,11 +27,11 @@ function renderPlaylist() {
 
     playlist.forEach((track, i) => {
         const div = document.createElement('div');
-        div.className = `p-4 rounded-2xl cursor-pointer transition-all hover:bg-purple-500/10 ${i === currentTrackIndex ? 'bg-purple-500/20' : ''}`;
+        div.className = `p-4 rounded-2xl cursor-pointer transition-all hover:bg-purple-500/10 ${i === currentTrackIndex ? 'bg-purple-500/20 border border-purple-400' : ''}`;
         div.innerHTML = `
             <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-400 rounded-xl"></div>
-                <div>
+                <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-400 rounded-xl flex items-center justify-center text-xl">▶</div>
+                <div class="flex-1">
                     <p class="font-medium text-sm">${track.title}</p>
                     <p class="text-xs text-slate-400">${track.artist}</p>
                 </div>
@@ -50,7 +50,7 @@ function playTrack(index) {
     document.getElementById('current-artist').textContent = track.artist;
 
     const iframe = document.getElementById('youtube-player');
-    iframe.src = `https://www.youtube.com/embed/${track.videoId}?autoplay=1`;
+    iframe.src = `https://www.youtube.com/embed/${track.videoId}?autoplay=1&rel=0`;
 
     renderPlaylist();
     isPlaying = true;
