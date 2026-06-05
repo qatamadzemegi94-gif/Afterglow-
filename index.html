@@ -95,24 +95,11 @@
             <p id="current-artist" class="text-center text-slate-400 text-sm">Afterglow Playlist</p>
         </div>
 
-        <!-- Progress -->
-        <div class="px-6">
-            <input type="range" id="progress-bar" class="w-full accent-purple-500" min="0" max="100" value="0">
-        </div>
-
         <!-- Controls -->
         <div class="flex justify-center gap-8 py-6">
             <button onclick="prevTrack()" class="text-3xl text-slate-400 hover:text-white"><i class="fas fa-backward"></i></button>
             <button onclick="togglePlay()" id="play-pause-btn" class="text-5xl text-purple-300"><i class="fas fa-play"></i></button>
             <button onclick="nextTrack()" class="text-3xl text-slate-400 hover:text-white"><i class="fas fa-forward"></i></button>
-        </div>
-
-        <!-- Volume -->
-        <div class="px-6 pb-6">
-            <div class="flex items-center gap-3">
-                <i class="fas fa-volume-up"></i>
-                <input type="range" id="volume-slider" class="w-full accent-purple-500" min="0" max="1" step="0.01" value="0.8">
-            </div>
         </div>
 
         <!-- Playlist -->
