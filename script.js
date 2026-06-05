@@ -1,19 +1,79 @@
 let posts = JSON.parse(localStorage.getItem('afterglow_posts')) || [];
-let currentUserLikes = JSON.parse(localStorage.getItem('afterglow_likes')) || [];
-let currentUserComments = JSON.parse(localStorage.getItem('afterglow_comments')) || [];
 
-const quotes = [
-    "ყოველი დღე ახალი დასაწყისია ✨",
-    "შენი ისტორია მნიშვნელოვანია 💜",
-    "შენ იმაზე ძლიერი ხარ, ვიდრე გგონია 🌙",
-    "დღესაც შეგიძლია გაიღიმო ⭐"
+// ===================== MUSIC PLAYER =====================
+let currentTrackIndex = 0;
+let isPlaying = false;
+
+const playlist = [
+    {
+        title: "Calm Lo-Fi Beat",
+        artist: "Afterglow",
+        videoId: "YywWuTPoGqc"
+    },
+    {
+        title: "Dreamy Night",
+        artist: "Chillhop",
+        videoId: "0cHtUNmdq_c"
+    }
 ];
 
-function init() {
-    renderFeed();
-    renderMySpace();
+function toggleMusicPanel() {
+    document.getElementById('music-panel').classList.toggle('translate-x-full');
 }
 
+function renderPlaylist() {
+    const container = document.getElementById('playlist');
+    container.innerHTML = '';
+
+    playlist.forEach((track, i) => {
+        const div = document.createElement('div');
+        div.className = `p-4 rounded-2xl cursor-pointer transition-all hover:bg-purple-500/10 ${i === currentTrackIndex ? 'bg-purple-500/20' : ''}`;
+        div.innerHTML = `
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-pink-400 rounded-xl"></div>
+                <div>
+                    <p class="font-medium text-sm">${track.title}</p>
+                    <p class="text-xs text-slate-400">${track.artist}</p>
+                </div>
+            </div>
+        `;
+        div.onclick = () => playTrack(i);
+        container.appendChild(div);
+    });
+}
+
+function playTrack(index) {
+    currentTrackIndex = index;
+    const track = playlist[index];
+
+    document.getElementById('current-title').textContent = track.title;
+    document.getElementById('current-artist').textContent = track.artist;
+
+    const iframe = document.getElementById('youtube-player');
+    iframe.src = `https://www.youtube.com/embed/${track.videoId}?autoplay=1`;
+
+    renderPlaylist();
+    isPlaying = true;
+    document.getElementById('play-pause-btn').innerHTML = `<i class="fas fa-pause"></i>`;
+}
+
+function togglePlay() {
+    isPlaying = !isPlaying;
+    const btn = document.getElementById('play-pause-btn');
+    btn.innerHTML = isPlaying ? `<i class="fas fa-pause"></i>` : `<i class="fas fa-play"></i>`;
+}
+
+function nextTrack() {
+    currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
+    playTrack(currentTrackIndex);
+}
+
+function prevTrack() {
+    currentTrackIndex = (currentTrackIndex - 1 + playlist.length) % playlist.length;
+    playTrack(currentTrackIndex);
+}
+
+// ===================== POST SYSTEM =====================
 function publishPost() {
     const input = document.getElementById('post-input');
     if (!input.value.trim()) return;
@@ -31,7 +91,6 @@ function publishPost() {
     localStorage.setItem('afterglow_posts', JSON.stringify(posts));
     input.value = '';
     renderFeed();
-    renderMySpace();
 }
 
 function toggleLike(id) {
@@ -46,10 +105,8 @@ function toggleLike(id) {
         post.likedBy.push('user');
         post.likes++;
     }
-
     localStorage.setItem('afterglow_posts', JSON.stringify(posts));
     renderFeed();
-    renderMySpace();
 }
 
 function addComment(id) {
@@ -58,29 +115,15 @@ function addComment(id) {
 
     const post = posts.find(p => p.id === id);
     if (post) {
-        post.comments.push({
-            id: Date.now(),
-            text: text,
-            timestamp: Date.now()
-        });
+        post.comments.push({ id: Date.now(), text });
         localStorage.setItem('afterglow_posts', JSON.stringify(posts));
         renderFeed();
     }
 }
 
 function deletePost(id) {
-    if (confirm("ნამდვილად გსურთ პოსტის წაშლა?")) {
+    if (confirm("წაიშალოს პოსტი?")) {
         posts = posts.filter(p => p.id !== id);
-        localStorage.setItem('afterglow_posts', JSON.stringify(posts));
-        renderFeed();
-        renderMySpace();
-    }
-}
-
-function deleteComment(postId, commentId) {
-    const post = posts.find(p => p.id === postId);
-    if (post) {
-        post.comments = post.comments.filter(c => c.id !== commentId);
         localStorage.setItem('afterglow_posts', JSON.stringify(posts));
         renderFeed();
     }
@@ -92,7 +135,6 @@ function renderFeed() {
 
     posts.forEach(post => {
         const isLiked = post.likedBy.includes('user');
-        
         const div = document.createElement('div');
         div.className = `card glass rounded-3xl p-8`;
         div.innerHTML = `
@@ -101,13 +143,12 @@ function renderFeed() {
                 <span>${timeAgo(post.timestamp)}</span>
             </div>
             <p class="text-lg leading-relaxed mb-6">${post.content}</p>
-            
             <div class="flex items-center justify-between">
                 <div class="flex gap-6">
-                    <button onclick="toggleLike(${post.id})" class="flex items-center gap-2 text-xl transition-all ${isLiked ? 'heart-liked' : ''}">
+                    <button onclick="toggleLike(${post.id})" class="flex items-center gap-2 text-2xl ${isLiked ? 'text-pink-500' : 'text-slate-400'}">
                         ❤️ <span>${post.likes}</span>
                     </button>
-                    <button onclick="addComment(${post.id})" class="flex items-center gap-2 text-xl">
+                    <button onclick="addComment(${post.id})" class="flex items-center gap-2 text-2xl text-slate-400">
                         💬 <span>${post.comments.length}</span>
                     </button>
                 </div>
@@ -115,14 +156,8 @@ function renderFeed() {
                     <i class="fas fa-trash"></i>
                 </button>
             </div>
-
-            <div class="mt-6 border-t border-purple-500/20 pt-4">
-                ${post.comments.map(c => `
-                    <div class="text-sm bg-[#1a1433] p-3 rounded-2xl mb-2 flex justify-between">
-                        <span>${c.text}</span>
-                        <button onclick="deleteComment(${post.id}, ${c.id})" class="text-red-400 text-xs">×</button>
-                    </div>
-                `).join('')}
+            <div class="mt-6 pt-4 border-t border-purple-500/20">
+                ${post.comments.map(c => `<div class="bg-[#1a1433] p-3 rounded-2xl text-sm mb-2">${c.text}</div>`).join('')}
             </div>
         `;
         container.appendChild(div);
@@ -137,66 +172,13 @@ function timeAgo(ts) {
     return Math.floor(diff/86400) + " დღის წინ";
 }
 
-function renderMySpace() {
-    // შეგიძლია გააფართოვო მოგვიანებით
-    document.getElementById('my-posts').innerHTML = posts.length ? posts.map(p => `<div class="text-sm">${p.content.substring(0,80)}...</div>`).join('') : '<p class="text-slate-400">ჯერ არ გაქვს პოსტები</p>';
-}
-
 function showTab(tab) {
     document.getElementById('feed-tab').classList.toggle('hidden', tab !== 'feed');
     document.getElementById('myspace-tab').classList.toggle('hidden', tab !== 'myspace');
 }
 
-// Music Panel
-let isPlaying = false;
-let currentTrack = 0;
-
-const playlist = [
-    { title: "Lo-Fi Chill", artist: "Afterglow", url: "#" },
-    { title: "Night Drive", artist: "Dreamwave", url: "#" },
-    // აქ ჩაწერე შენი სიმღერების ლინკები
-];
-
-function toggleMusicPanel() {
-    const panel = document.getElementById('music-panel');
-    panel.classList.toggle('translate-x-full');
-}
-
-function renderPlaylist() {
-    const container = document.getElementById('playlist');
-    container.innerHTML = playlist.map((song, i) => `
-        <div onclick="playTrack(${i})" class="flex justify-between p-3 hover:bg-white/10 rounded-xl cursor-pointer">
-            <div>
-                <p class="font-medium">${song.title}</p>
-                <p class="text-xs text-slate-400">${song.artist}</p>
-            </div>
-        </div>
-    `).join('');
-}
-
-function playTrack(i) {
-    currentTrack = i;
-    document.getElementById('song-title').textContent = playlist[i].title;
-    // აქ შეგიძლია დაუკავშირო რეალური audio
-}
-
-function togglePlay() {
-    isPlaying = !isPlaying;
-    document.getElementById('play-btn').innerHTML = isPlaying ? `<i class="fas fa-pause"></i>` : `<i class="fas fa-play"></i>`;
-}
-
-function nextTrack() { 
-    currentTrack = (currentTrack + 1) % playlist.length; 
-    playTrack(currentTrack); 
-}
-
-function prevTrack() { 
-    currentTrack = (currentTrack - 1 + playlist.length) % playlist.length; 
-    playTrack(currentTrack); 
-}
-
 // Initialize
 window.onload = () => {
-    init();
+    renderFeed();
     renderPlaylist();
 };
