@@ -50,11 +50,12 @@
 
         <!-- Post Form -->
         <div class="glass rounded-3xl p-8 mb-12">
-            <textarea id="post-input" rows="4" class="w-full bg-[#1a1433] border border-purple-500/30 rounded-2xl p-6 text-lg placeholder-slate-400 focus:outline-none focus:border-purple-400" 
+            <textarea id="post-input" rows="4" 
+                class="w-full bg-[#1a1433] border border-purple-500/30 rounded-2xl p-6 text-lg placeholder-slate-400 focus:outline-none focus:border-purple-400 resize-none"
                 placeholder="რა გაწუხებს დღეს? რისი თქმა გინდა, მაგრამ ვერავის ეუბნები..."></textarea>
-            
             <div class="flex justify-end mt-4">
-                <button onclick="publishPost()" class="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl font-medium hover:scale-105 transition-all">
+                <button onclick="publishPost()" 
+                    class="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl font-medium hover:scale-105 transition-all">
                     გაზიარება ანონიმურად
                 </button>
             </div>
@@ -69,44 +70,55 @@
         <!-- My Space -->
         <div id="myspace-tab" class="hidden">
             <h2 class="text-2xl font-semibold mb-6">ჩემი სივრცე</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="glass rounded-3xl p-6">
-                    <h3 class="text-lg mb-4">ჩემი პოსტები</h3>
-                    <div id="my-posts" class="space-y-4"></div>
-                </div>
-                <div class="glass rounded-3xl p-6">
-                    <h3 class="text-lg mb-4">ჩემი ლაიქები</h3>
-                    <div id="my-likes" class="space-y-3 text-sm"></div>
-                </div>
-                <div class="glass rounded-3xl p-6">
-                    <h3 class="text-lg mb-4">სტატისტიკა</h3>
-                    <div id="stats" class="space-y-4"></div>
-                </div>
-            </div>
+            <div id="my-posts" class="space-y-6"></div>
         </div>
     </div>
 
     <!-- Music Panel -->
-    <div id="music-panel" class="fixed right-0 top-0 h-full w-96 glass border-l border-purple-500/30 translate-x-full transition-transform duration-300 z-[100] overflow-y-auto">
-        <div class="p-6">
-            <div class="flex justify-between items-center mb-8">
-                <h3 class="text-xl font-medium">ღამის მეგობარი 🎵</h3>
-                <button onclick="toggleMusicPanel()" class="text-2xl">✕</button>
+    <div id="music-panel" class="fixed right-0 top-0 h-full w-96 glass border-l border-purple-500/30 translate-x-full transition-all duration-300 z-[100] flex flex-col">
+        <div class="p-6 border-b border-purple-500/20">
+            <div class="flex justify-between items-center">
+                <h3 class="text-xl font-medium flex items-center gap-2">
+                    <i class="fas fa-music text-purple-400"></i> ღამის მეგობარი
+                </h3>
+                <button onclick="toggleMusicPanel()" class="text-2xl text-slate-400 hover:text-white">✕</button>
             </div>
-            
-            <div id="now-playing" class="text-center mb-8">
-                <div class="w-40 h-40 mx-auto rounded-2xl bg-gradient-to-br from-purple-400 to-pink-400 mb-4 shadow-xl"></div>
-                <p id="song-title" class="font-medium">აირჩიე სიმღერა</p>
-                <p id="song-artist" class="text-sm text-slate-400">Afterglow Playlist</p>
-            </div>
+        </div>
 
-            <div class="space-y-2 mb-8" id="playlist"></div>
-
-            <div class="flex items-center gap-4">
-                <button onclick="prevTrack()" class="text-2xl"><i class="fas fa-backward"></i></button>
-                <button onclick="togglePlay()" id="play-btn" class="text-4xl"><i class="fas fa-play"></i></button>
-                <button onclick="nextTrack()" class="text-2xl"><i class="fas fa-forward"></i></button>
+        <!-- Now Playing -->
+        <div class="p-6 border-b border-purple-500/20">
+            <div class="w-52 h-52 mx-auto rounded-3xl overflow-hidden mb-6 shadow-2xl">
+                <iframe id="youtube-player" width="100%" height="100%" frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
+            <p id="current-title" class="font-semibold text-center text-lg">აირჩიე სიმღერა</p>
+            <p id="current-artist" class="text-center text-slate-400 text-sm">Afterglow Playlist</p>
+        </div>
+
+        <!-- Progress -->
+        <div class="px-6">
+            <input type="range" id="progress-bar" class="w-full accent-purple-500" min="0" max="100" value="0">
+        </div>
+
+        <!-- Controls -->
+        <div class="flex justify-center gap-8 py-6">
+            <button onclick="prevTrack()" class="text-3xl text-slate-400 hover:text-white"><i class="fas fa-backward"></i></button>
+            <button onclick="togglePlay()" id="play-pause-btn" class="text-5xl text-purple-300"><i class="fas fa-play"></i></button>
+            <button onclick="nextTrack()" class="text-3xl text-slate-400 hover:text-white"><i class="fas fa-forward"></i></button>
+        </div>
+
+        <!-- Volume -->
+        <div class="px-6 pb-6">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-volume-up"></i>
+                <input type="range" id="volume-slider" class="w-full accent-purple-500" min="0" max="1" step="0.01" value="0.8">
+            </div>
+        </div>
+
+        <!-- Playlist -->
+        <div class="flex-1 overflow-y-auto px-6 pb-6">
+            <h4 class="uppercase text-xs tracking-widest text-slate-400 mb-4">Playlist</h4>
+            <div id="playlist" class="space-y-2"></div>
         </div>
     </div>
 
