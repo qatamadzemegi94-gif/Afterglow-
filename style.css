@@ -20,10 +20,6 @@ body { font-family: 'Inter', sans-serif; }
     box-shadow: 0 0 35px rgba(168, 85, 247, 0.35);
 }
 
-.glow-card {
-    transition: all 0.4s ease;
-}
-
 .glow-card:hover {
     box-shadow: 0 0 40px rgba(168, 85, 247, 0.5);
     transform: translateY(-8px);
@@ -37,4 +33,12 @@ body { font-family: 'Inter', sans-serif; }
 .nav-link.active {
     color: #c084fc;
     border-bottom: 3px solid #c084fc;
+}
+
+.reaction-btn {
+    transition: transform 0.2s;
+}
+
+.reaction-btn:hover {
+    transform: scale(1.4);
 }
