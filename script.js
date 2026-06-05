@@ -217,7 +217,8 @@ function renderMySpace() {
 let playlist = [
     { title: "Lo-Fi Chill", artist: "Afterglow", videoId: "YywWuTPoGqc" },
     { title: "Night Drive", artist: "Dreamwave", videoId: "0cHtUNmdq_c" },
-    { title: "Calm Vibes", artist: "Chillhop", videoId: "YywWuTPoGqc" }
+    { title: "Calm Vibes", artist: "Chillhop", videoId: "YywWuTPoGqc" },
+    { title: "Dreamy Night", artist: "Lofi Girl", videoId: "0cHtUNmdq_c" }
 ];
 
 function toggleMusicPanel() {
@@ -228,12 +229,12 @@ function toggleMusicPanel() {
     }
 }
 
-function renderMusicPlaylist(searchTerm) {
+function renderMusicPlaylist(searchTerm = "") {
     const container = document.getElementById('playlist-container');
     container.innerHTML = '';
 
     const filtered = playlist.filter(track => 
-        track.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        track.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
         track.artist.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -255,11 +256,10 @@ function renderMusicPlaylist(searchTerm) {
 }
 
 function playMusic(track) {
-    alert(`🎵 ირთვება: ${track.title} - ${track.artist}\n(YouTube Embed მომავალ ვერსიაში გაუმჯობესდება)`);
+    alert(`🎵 ახლა ირთვება:\n\n${track.title}\n${track.artist}`);
 }
 
-// Search Event
-document.addEventListener('input', function(e) {
+document.addEventListener('input', (e) => {
     if (e.target.id === 'music-search') {
         renderMusicPlaylist(e.target.value);
     }
