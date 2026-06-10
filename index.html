@@ -24,39 +24,52 @@
         <header>
             <h2>Afterglow</h2>
             <div class="nav">
-                <div class="nav-item active">Home</div>
-                <div class="nav-item">Feed</div>
-                <div class="nav-item">My Space</div>
+                <div class="nav-item active" onclick="switchTab(0)">Home</div>
+                <div class="nav-item" onclick="switchTab(1)">Feed</div>
+                <div class="nav-item" onclick="switchTab(2)">My Space</div>
             </div>
         </header>
 
-        <div class="mood-selector">
-            <div class="mood-option" data-mood="hopeful" onclick="setMood(this)">🌈</div>
-            <div class="mood-option" data-mood="sad" onclick="setMood(this)">😔</div>
-            <div class="mood-option" data-mood="angry" onclick="setMood(this)">😡</div>
-            <div class="mood-option" data-mood="overwhelmed" onclick="setMood(this)">😭</div>
-            <div class="mood-option" data-mood="calm" onclick="setMood(this)">🌙</div>
-        </div>
-
-        <div class="quote-section">
-            <p id="dailyQuote">"ჩვენ გისმენთ. შენ არ ხარ მარტო."</p>
-        </div>
-
-        <div class="post-form">
-            <textarea id="postText" placeholder="ჩვენ გისმენთ განკიცხვის გარეშე. შეგიძლია მოგვიყვე ყველაფერი... 💜"></textarea>
-            <div class="post-actions">
-                <button onclick="publishPost()" class="post-btn">Share Anonymously 💜</button>
-                <span class="anonymous-label">Anonymous • Moon</span>
+        <!-- HOME PAGE -->
+        <section id="home-page" class="page active">
+            <div class="mood-selector">
+                <div class="mood-option" data-mood="hopeful" onclick="setMood(this)">🌈</div>
+                <div class="mood-option" data-mood="sad" onclick="setMood(this)">😔</div>
+                <div class="mood-option" data-mood="angry" onclick="setMood(this)">😡</div>
+                <div class="mood-option" data-mood="overwhelmed" onclick="setMood(this)">😭</div>
+                <div class="mood-option" data-mood="calm" onclick="setMood(this)">🌙</div>
             </div>
-        </div>
 
-        <div class="feed" id="feed"></div>
+            <div class="quote-section">
+                <p id="dailyQuote">"ჩვენ გისმენთ. შენ არ ხარ მარტო."</p>
+            </div>
+
+            <div class="post-form">
+                <textarea id="postText" placeholder="ჩვენ გისმენთ განკიცხვის გარეშე. შეგიძლია მოგვიყვე ყველაფერი... 💜"></textarea>
+                <div class="post-actions">
+                    <button onclick="publishPost()" class="post-btn">Share Anonymously 💜</button>
+                    <span class="anonymous-label">Anonymous • Moon</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- FEED PAGE -->
+        <section id="feed-page" class="page">
+            <div class="feed" id="feed"></div>
+        </section>
+
+        <!-- MY SPACE PAGE -->
+        <section id="space-page" class="page">
+            <div class="my-space">
+                <h2 style="text-align:center; margin:40px 0; color:#ff8ab5;">My Space</h2>
+                <p style="text-align:center; opacity:0.8;">აქ მოგვიანებით გამოჩნდება შენი პოსტები და სტატისტიკა 💜</p>
+            </div>
+        </section>
     </div>
 
-    <!-- Floating Music Button -->
+    <!-- Floating Music -->
     <div class="music-float-btn" onclick="toggleMusicPanel()">♫</div>
 
-    <!-- Music Panel -->
     <div class="music-panel" id="musicPanel">
         <div class="music-header">
             <h3>🎵 Afterglow Playlist</h3>
