@@ -9,7 +9,7 @@
 <body>
     <canvas id="particles"></canvas>
 
-    <!-- Landing -->
+    <!-- Landing Page -->
     <div id="landing">
         <div class="container">
             <h1 class="logo">AFTERGLOW</h1>
@@ -33,28 +33,15 @@
         <!-- HOME -->
         <section id="home-page" class="page active">
             <div class="content-wrapper">
-                <!-- Motivational Slider -->
                 <div class="motivational-slider" id="motivationalSlider">
                     <p id="motivationalText">"შენს გრძნობებს მნიშვნელობა აქვს."</p>
                 </div>
 
                 <div class="post-form">
-                    <textarea id="postText" placeholder="ჩვენ გისმენთ განკიცხვის გარეშე... 💜"></textarea>
+                    <textarea id="postText" placeholder="ჩვენ გისმენთ განკიცხვის გარეშე. შეგიძლია მოგვიყვე ყველაფერი... 💜"></textarea>
                     <div class="post-actions">
-                        <button onclick="toggleEmojiPicker()" class="emoji-btn">😀</button>
                         <button onclick="publishPost()" class="post-btn">Share Anonymously 💜</button>
                     </div>
-                </div>
-
-                <!-- Emoji Picker -->
-                <div id="emojiPicker" class="emoji-picker">
-                    <span onclick="addEmojiToPost(this)">😊</span>
-                    <span onclick="addEmojiToPost(this)">❤️</span>
-                    <span onclick="addEmojiToPost(this)">😢</span>
-                    <span onclick="addEmojiToPost(this)">😡</span>
-                    <span onclick="addEmojiToPost(this)">🌈</span>
-                    <span onclick="addEmojiToPost(this)">🫂</span>
-                    <span onclick="addEmojiToPost(this)">✨</span>
                 </div>
             </div>
         </section>
@@ -69,8 +56,8 @@
         <!-- MY SPACE -->
         <section id="space-page" class="page">
             <div class="content-wrapper">
-                <h2 style="text-align:center; color:#ff8ab5; margin:40px 0;">My Space</h2>
-                <div class="feed" id="my-posts"></div>
+                <h2 style="text-align:center; color:#ff8ab5; margin:50px 0;">My Space</h2>
+                <p style="text-align:center; opacity:0.8;">აქ გამოჩნდება შენი პოსტები</p>
             </div>
         </section>
     </div>
