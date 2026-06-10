@@ -42,22 +42,20 @@ function animateParticles() {
     requestAnimationFrame(animateParticles);
 }
 
-// ==================== TAB NAVIGATION ====================
-function switchTab(tab) {
-    document.querySelectorAll('.nav-item').forEach((item, i) => {
-        item.classList.toggle('active', i === tab);
+// Tab System
+function switchTab(n) {
+    document.querySelectorAll('.nav-item').forEach((el, i) => {
+        el.classList.toggle('active', i === n);
     });
 
     document.querySelectorAll('.page').forEach(page => {
         page.classList.remove('active');
     });
 
-    if (tab === 0) document.getElementById('home-page').classList.add('active');
-    if (tab === 1) document.getElementById('feed-page').classList.add('active');
-    if (tab === 2) document.getElementById('space-page').classList.add('active');
+    document.getElementById(['home-page', 'feed-page', 'space-page'][n]).classList.add('active');
 }
 
-// ==================== MUSIC ====================
+// Music
 let currentAudio = null;
 let currentTrackIndex = -1;
 
@@ -71,40 +69,36 @@ const musicTracks = [
 function renderMusicList() {
     const container = document.getElementById('musicList');
     container.innerHTML = '';
-
-    musicTracks.forEach((track, index) => {
-        const isActive = index === currentTrackIndex;
+    musicTracks.forEach((track, i) => {
+        const active = i === currentTrackIndex ? 'active' : '';
         const div = document.createElement('div');
-        div.className = `music-track ${isActive ? 'active' : ''}`;
+        div.className = `music-track ${active}`;
         div.innerHTML = `
             <div class="track-info">
                 <div class="track-title">${track.title}</div>
-                <div style="font-size:0.85rem; opacity:0.7;">${track.artist}</div>
+                <div style="opacity:0.7; font-size:0.9rem;">${track.artist}</div>
             </div>
-            <div class="play-btn" onclick="playTrack(${index}); event.stopImmediatePropagation()">
-                ${isActive ? '❚❚' : '▶'}
-            </div>
+            <button class="play-btn" onclick="playTrack(${i}); event.stopImmediatePropagation()">
+                ${active ? '❚❚' : '▶'}
+            </button>
         `;
         container.appendChild(div);
     });
 }
 
-function playTrack(index) {
-    const track = musicTracks[index];
-    if (currentTrackIndex === index && currentAudio) {
+function playTrack(i) {
+    if (currentTrackIndex === i && currentAudio) {
         currentAudio.pause();
         currentTrackIndex = -1;
         renderMusicList();
         return;
     }
     if (currentAudio) currentAudio.pause();
-
-    currentAudio = new Audio(track.src);
-    currentAudio.volume = 0.8;
+    currentAudio = new Audio(musicTracks[i].src);
     currentAudio.play().then(() => {
-        currentTrackIndex = index;
+        currentTrackIndex = i;
         renderMusicList();
-    }).catch(() => alert(`შეცდომა: ${track.title}`));
+    }).catch(() => alert("მუსიკა ვერ ჩაიტვირთა"));
 }
 
 function toggleMusicPanel() {
@@ -113,44 +107,14 @@ function toggleMusicPanel() {
     if (panel.style.display === 'block') renderMusicList();
 }
 
-// ==================== OTHER FUNCTIONS ====================
+// Other Functions
 let currentMood = "calm";
-let posts = [];
 
 function publishPost() {
     const text = document.getElementById('postText').value.trim();
     if (!text) return;
-
-    const newPost = {
-        id: Date.now(),
-        name: "Anonymous " + ["Moon","Star","Cloud","Echo"][Math.floor(Math.random()*4)],
-        text: text,
-        likes: 0,
-        hugs: 0,
-        mood: currentMood
-    };
-
-    posts.unshift(newPost);
-    renderFeed();
-
-    const thank = document.createElement('div');
-    thank.style.cssText = `position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(139,92,246,0.95);color:white;padding:30px 50px;border-radius:30px;z-index:1000;box-shadow:0 0 60px #ff8ab5;`;
-    thank.textContent = 'Thank you for sharing 💜';
-    document.body.appendChild(thank);
-    setTimeout(() => thank.remove(), 2200);
-
+    alert("პოსტი გამოქვეყნებულია! 💜");
     document.getElementById('postText').value = '';
-}
-
-function renderFeed() {
-    const feed = document.getElementById('feed');
-    feed.innerHTML = '';
-    posts.forEach(post => {
-        const div = document.createElement('div');
-        div.className = 'post-card';
-        div.innerHTML = `<div class="post-text">${post.text}</div>`;
-        feed.appendChild(div);
-    });
 }
 
 function setMood(el) {
@@ -162,13 +126,16 @@ function setMood(el) {
 function enterApp() {
     document.getElementById('landing').style.display = 'none';
     document.getElementById('app').style.display = 'block';
-    switchTab(0); // Home-ზე გადავიდეს
+    switchTab(0);
 }
 
-// Initialize
+// Init
 window.onload = () => {
     resizeCanvas();
     initParticles();
     animateParticles();
-    window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
+    window.addEventListener('resize', () => {
+        resizeCanvas();
+        initParticles();
+    });
 };
