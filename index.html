@@ -3,73 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Afterglow — შენი უსაფრთხო სივრცე</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <title>Afterglow</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-[#0a0714] text-slate-200 min-h-screen">
-    <!-- Navbar -->
-    <nav class="fixed top-0 w-full z-50 glass border-b border-purple-500/20">
-        <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-            <h1 class="text-3xl font-bold text-purple-300">Afterglow</h1>
-            <div class="flex gap-10 text-base font-medium">
-                <a href="#" onclick="switchTab(0)" id="nav-0" class="nav-link active">Home</a>
-                <a href="#" onclick="switchTab(1)" id="nav-1" class="nav-link">Feed</a>
-                <a href="#" onclick="switchTab(2)" id="nav-2" class="nav-link">My Space</a>
-            </div>
-            <button onclick="toggleMusicPanel()" class="flex items-center gap-2 px-6 py-3 rounded-2xl glass hover:bg-purple-500/20">
-                <i class="fas fa-music"></i> მუსიკა
-            </button>
-        </div>
-    </nav>
+<body>
+    <canvas id="particles"></canvas>
 
-    <div class="pt-24 pb-12 max-w-7xl mx-auto px-6">
-        <!-- HOME -->
-        <div id="tab-0" class="tab-content">
-            <div class="text-center mb-16">
-                <h1 class="text-5xl md:text-6xl font-semibold mb-4 text-purple-200">ჩვენ გისმენთ</h1>
-                <p class="text-2xl text-slate-400 mb-12">შენ არ ხარ მარტო 💜</p>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
-                    <div class="glass p-8 rounded-3xl text-center hover:scale-105 transition-all glow-card">✨ ყოველი დღე ახალი დასაწყისია</div>
-                    <div class="glass p-8 rounded-3xl text-center hover:scale-105 transition-all glow-card">💜 შენი ისტორია მნიშვნელოვანია</div>
-                    <div class="glass p-8 rounded-3xl text-center hover:scale-105 transition-all glow-card">🌙 შენ იმაზე ძლიერი ხარ, ვიდრე გგონია</div>
-                    <div class="glass p-8 rounded-3xl text-center hover:scale-105 transition-all glow-card">⭐ დღეს შეგიძლია კიდევ ერთი ნაბიჯი გადადგა</div>
-                </div>
-            </div>
-
-            <div class="glass rounded-3xl p-8">
-                <textarea id="post-input" rows="5" class="w-full bg-[#1a1433] border border-purple-500/30 rounded-2xl p-6 text-lg placeholder-slate-400 focus:outline-none focus:border-purple-400 resize-none" placeholder="რა გაწუხებს დღეს?..."></textarea>
-                <div class="flex justify-end mt-4">
-                    <button onclick="publishPost()" class="px-10 py-3.5 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl font-medium text-lg hover:scale-105 transition-all">გაზიარება ანონიმურად</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- FEED -->
-        <div id="tab-1" class="tab-content hidden">
-            <h2 class="text-3xl font-semibold mb-8">Community Feed</h2>
-            <div id="feed" class="space-y-8"></div>
-        </div>
-
-        <!-- MY SPACE -->
-        <div id="tab-2" class="tab-content hidden">
-            <h2 class="text-3xl font-semibold mb-8">ჩემი სივრცე</h2>
-            <div id="my-posts" class="space-y-8"></div>
+    <!-- Landing Page -->
+    <div id="landing">
+        <div class="container">
+            <h1 class="logo">AFTERGLOW</h1>
+            <p class="tagline">Talk Without Judgment</p>
+            <p class="subtitle">ადგილი, სადაც შეგიძლია გულწრფელად ილაპარაკო ✨</p>
+            <button class="glow-btn" onclick="enterApp()">Ready?</button>
         </div>
     </div>
 
-    <!-- Music Panel -->
-    <div id="music-panel" class="fixed right-0 top-0 h-full w-96 glass border-l border-purple-500/30 translate-x-full transition-all duration-300 z-[100] flex flex-col">
-        <div class="p-6 border-b border-purple-500/20">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-medium">ღამის მეგობარი 🎵</h3>
-                <button onclick="toggleMusicPanel()" class="text-3xl text-slate-400 hover:text-white">✕</button>
+    <!-- Main App -->
+    <div id="app">
+        <header>
+            <h2>Afterglow</h2>
+            <div class="nav">
+                <div class="nav-item active">Home</div>
+                <div class="nav-item">Feed</div>
+                <div class="nav-item">My Space</div>
             </div>
-            <input type="text" id="music-search" placeholder="სიმღერის ძებნა..." class="w-full bg-[#1a1433] border border-purple-500/30 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:border-purple-400">
+        </header>
+
+        <div class="mood-selector">
+            <div class="mood-option" data-mood="hopeful" onclick="setMood(this)">🌈</div>
+            <div class="mood-option" data-mood="sad" onclick="setMood(this)">😔</div>
+            <div class="mood-option" data-mood="angry" onclick="setMood(this)">😡</div>
+            <div class="mood-option" data-mood="overwhelmed" onclick="setMood(this)">😭</div>
+            <div class="mood-option" data-mood="calm" onclick="setMood(this)">🌙</div>
         </div>
-        <div class="flex-1 overflow-auto p-6" id="playlist-container"></div>
+
+        <div class="quote-section">
+            <p id="dailyQuote">"ჩვენ გისმენთ. შენ არ ხარ მარტო."</p>
+        </div>
+
+        <div class="post-form">
+            <textarea id="postText" placeholder="ჩვენ გისმენთ განკიცხვის გარეშე. შეგიძლია მოგვიყვე ყველაფერი... 💜"></textarea>
+            <div class="post-actions">
+                <button onclick="publishPost()" class="post-btn">Share Anonymously 💜</button>
+                <span class="anonymous-label">Anonymous • Moon</span>
+            </div>
+        </div>
+
+        <div class="feed" id="feed"></div>
+    </div>
+
+    <!-- Music -->
+    <div class="music-float-btn" onclick="toggleMusicPanel()">♫</div>
+
+    <div class="music-panel" id="musicPanel">
+        <div class="music-header">
+            <h3>🎵 Afterglow Playlist</h3>
+            <span onclick="toggleMusicPanel()" class="close-btn">✕</span>
+        </div>
+        <div id="musicList" class="music-list"></div>
     </div>
 
     <script src="script.js"></script>
