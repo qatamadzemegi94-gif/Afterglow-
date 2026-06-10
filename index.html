@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Particles Background -->
     <canvas id="particles"></canvas>
 
     <!-- Landing Page -->
@@ -30,6 +31,7 @@
             </div>
         </header>
 
+        <!-- Mood Selector -->
         <div class="mood-selector">
             <div class="mood-option" data-mood="hopeful" onclick="setMood(this)">🌈</div>
             <div class="mood-option" data-mood="sad" onclick="setMood(this)">😔</div>
@@ -38,10 +40,12 @@
             <div class="mood-option" data-mood="calm" onclick="setMood(this)">🌙</div>
         </div>
 
+        <!-- Daily Quote -->
         <div class="quote-section">
             <p id="dailyQuote">"ჩვენ გისმენთ. შენ არ ხარ მარტო."</p>
         </div>
 
+        <!-- Post Form -->
         <div class="post-form">
             <textarea id="postText" placeholder="ჩვენ გისმენთ განკიცხვის გარეშე. შეგიძლია მოგვიყვე ყველაფერი... 💜"></textarea>
             <div class="post-actions">
@@ -50,12 +54,14 @@
             </div>
         </div>
 
+        <!-- Feed -->
         <div class="feed" id="feed"></div>
     </div>
 
-    <!-- Music -->
+    <!-- Floating Music Button -->
     <div class="music-float-btn" onclick="toggleMusicPanel()">♫</div>
 
+    <!-- Music Panel -->
     <div class="music-panel" id="musicPanel">
         <div class="music-header">
             <h3>🎵 Afterglow Playlist</h3>
