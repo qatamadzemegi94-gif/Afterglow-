@@ -1,77 +1,92 @@
-// შენი არსებული კოდი (Particles, enterApp, switchTab, publishPost და ა.შ.) დარჩეს უცვლელად
+// Particles
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let particles = [];
 
-// ==================== MUSIC PANEL ====================
-let currentAudio = null;
-let currentTrackIndex = -1;
-
-const songs = [
-    { title: "After Dark", artist: "Mr.Kitty", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" },
-    { title: "Skyfall", artist: "Adele", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" },
-    // აქ დაამატე შენი სიმღერები:
-    // { title: "სიმღერის სახელი", artist: "შემსრულებელი", url: "შენი ლინკი" }
-];
-
-function toggleMusicPanel() {
-    const panel = document.getElementById('musicPanel');
-    panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
-    if (panel.style.display === 'block') renderMusicList();
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 }
 
-function renderMusicList(filteredSongs = songs) {
-    const container = document.getElementById('musicList');
-    container.innerHTML = '';
-
-    filteredSongs.forEach((song, index) => {
-        const globalIndex = songs.indexOf(song);
-        const isActive = globalIndex === currentTrackIndex;
-
-        const div = document.createElement('div');
-        div.className = `music-track ${isActive ? 'active' : ''}`;
-        div.innerHTML = `
-            <div>
-                <div style="font-weight:500;">${song.title}</div>
-                <div style="font-size:0.85rem; opacity:0.7;">${song.artist}</div>
-            </div>
-            <button onclick="playSong(${globalIndex}); event.stopImmediatePropagation()" style="background:none;border:none;font-size:1.6rem;color:#ff8ab5;">
-                ${isActive ? '❚❚' : '▶'}
-            </button>
-        `;
-        container.appendChild(div);
-    });
-}
-
-function playSong(index) {
-    if (currentTrackIndex === index && currentAudio) {
-        currentAudio.pause();
-        currentTrackIndex = -1;
-        renderMusicList();
-        return;
+class Particle {
+    constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 3 + 1;
+        this.speedX = Math.random() * 0.5 - 0.25;
+        this.speedY = Math.random() * 0.5 - 0.25;
+        this.opacity = Math.random() * 0.6 + 0.3;
     }
-
-    if (currentAudio) currentAudio.pause();
-
-    currentAudio = new Audio(songs[index].url);
-    currentAudio.play().then(() => {
-        currentTrackIndex = index;
-        renderMusicList();
-        document.getElementById('nowPlaying').textContent = `${songs[index].title} - ${songs[index].artist}`;
-    }).catch(() => {
-        alert("სიმღერა ვერ ჩაიტვირთა");
-    });
+    update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+    }
+    draw() {
+        ctx.fillStyle = `rgba(180, 140, 255, ${this.opacity})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+    }
 }
 
-// Search
-document.getElementById('musicSearch').addEventListener('input', (e) => {
-    const term = e.target.value.toLowerCase();
-    const filtered = songs.filter(song => 
-        song.title.toLowerCase().includes(term) || 
-        song.artist.toLowerCase().includes(term)
-    );
-    renderMusicList(filtered);
-});
+function initParticles() {
+    particles = [];
+    for (let i = 0; i < 120; i++) particles.push(new Particle());
+}
 
-// Initialize Music
-window.onload = function() {
-    // შენი არსებული onload კოდი...
-    renderMusicList(); // მუსიკის სია პირველად ჩაიტვირთოს
+function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(animateParticles);
+}
+
+// Tab System
+function switchTab(n) {
+    document.querySelectorAll('.nav-item').forEach((el, i) => {
+        el.classList.toggle('active', i === n);
+    });
+    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+    document.getElementById(['home-page','feed-page','space-page'][n]).classList.add('active');
+}
+
+// Enter App
+function enterApp() {
+    const landing = document.getElementById('landing');
+    const app = document.getElementById('app');
+
+    landing.style.transition = 'opacity 0.8s ease';
+    landing.style.opacity = '0';
+
+    setTimeout(() => {
+        landing.style.display = 'none';
+        app.style.display = 'block';
+        switchTab(0);
+    }, 700);
+}
+
+// Simple Post
+function publishPost() {
+    const text = document.getElementById('postText').value.trim();
+    if (!text) return;
+    alert('პოსტი წარმატებით გამოქვეყნდა 💜');
+    document.getElementById('postText').value = '';
+}
+
+// Music
+function toggleMusicPanel() {
+    alert("🎵 მუსიკის პანელი მალე გააქტიურდება! (შეგიძლია შემდეგ დაამატო სიმღერები)");
+}
+
+// Initialize
+window.onload = () => {
+    resizeCanvas();
+    initParticles();
+    animateParticles();
+
+    window.addEventListener('resize', () => {
+        resizeCanvas();
+        initParticles();
+    });
 };
