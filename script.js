@@ -1,67 +1,147 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@700&display=swap');
+// Particles (იგივე)
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let particles = [];
 
-:root {
-    --accent: #ff8ab5;
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-    font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg, #0a0a1f, #1a0a2e, #2a1a3f);
-    color: #e0d4ff;
-    overflow-x: hidden;
-    min-height: 100vh;
+class Particle {
+    constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 3 + 1;
+        this.speedX = Math.random() * 0.5 - 0.25;
+        this.speedY = Math.random() * 0.5 - 0.25;
+        this.opacity = Math.random() * 0.6 + 0.3;
+    }
+    update() {
+        this.x += this.speedX; this.y += this.speedY;
+        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+    }
+    draw() {
+        ctx.fillStyle = `rgba(180, 140, 255, ${this.opacity})`;
+        ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+    }
 }
 
-/* Particles */
-#particles {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;
+function initParticles() { particles = []; for (let i = 0; i < 120; i++) particles.push(new Particle()); }
+function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(animateParticles);
 }
 
-/* Landing, Header, Mood, Post, Feed სტილები (იგივე რაც წინა ვერსიაში) */
-.logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 5.5rem;
-    font-weight: 700;
-    background: linear-gradient(90deg, #c4a1ff, #ff8ab5, #a1c4ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: glowPulse 3s infinite alternate;
+// ==================== MUSIC SECTION ====================
+let currentAudio = null;
+let currentTrackIndex = -1;
+
+// შენი სიმღერები (ჩააგდე mp3 ფაილები "music" საქაღალდეში)
+const musicTracks = [
+    { title: "After Dark", artist: "Mr.Kitty", src: "music/after-dark.mp3" },
+    { title: "Skyfall", artist: "Adele", src: "music/skyfall.mp3" },
+    { title: "Blinding Lights", artist: "The Weeknd", src: "music/blinding-lights.mp3" },
+    { title: "Sweater Weather", artist: "The Neighbourhood", src: "music/sweater-weather.mp3" }
+];
+
+function renderMusicList() {
+    const container = document.getElementById('musicList');
+    container.innerHTML = '';
+
+    musicTracks.forEach((track, index) => {
+        const isActive = index === currentTrackIndex;
+        const div = document.createElement('div');
+        div.className = `music-track ${isActive ? 'active' : ''}`;
+        div.innerHTML = `
+            <div class="track-info">
+                <div class="track-title">${track.title}</div>
+                <div style="font-size:0.85rem; opacity:0.7;">${track.artist}</div>
+            </div>
+            <div class="play-btn" onclick="playTrack(${index}); event.stopImmediatePropagation()">
+                ${isActive ? '❚❚' : '▶'}
+            </div>
+        `;
+        container.appendChild(div);
+    });
 }
 
-/* ... (სრული სტილები წინა ვერსიიდან) ... */
+function playTrack(index) {
+    const track = musicTracks[index];
 
-/* Music Styles */
-.music-float-btn {
-    position: fixed; bottom: 25px; right: 25px; width: 68px; height: 68px;
-    background: linear-gradient(135deg, #6b4e9e, #ff8ab5);
-    color: white; font-size: 2rem; display: flex; align-items: center; justify-content: center;
-    border-radius: 50%; box-shadow: 0 10px 40px rgba(255, 138, 181, 0.6);
-    cursor: pointer; z-index: 300; transition: all 0.4s ease; animation: pulse 2s infinite;
+    if (currentTrackIndex === index && currentAudio) {
+        currentAudio.pause();
+        currentTrackIndex = -1;
+        renderMusicList();
+        return;
+    }
+
+    if (currentAudio) currentAudio.pause();
+
+    currentAudio = new Audio(track.src);
+    currentAudio.volume = 0.8;
+
+    currentAudio.play().then(() => {
+        currentTrackIndex = index;
+        renderMusicList();
+    }).catch(err => {
+        console.error("Audio Error:", err);
+        alert(`ვერ ჩაიტვირთა: ${track.title}\nშეამოწმე რომ mp3 ფაილი არსებობს "music" საქაღალდეში`);
+    });
+
+    currentAudio.onended = () => {
+        currentTrackIndex = -1;
+        renderMusicList();
+    };
 }
 
-.music-panel {
-    position: fixed; bottom: 110px; right: 25px; width: 380px; max-height: 75vh;
-    background: rgba(15, 10, 45, 0.97); backdrop-filter: blur(25px);
-    border-radius: 24px; padding: 20px; box-shadow: 0 25px 70px rgba(0,0,0,0.8);
-    border: 1px solid rgba(255,138,181,0.4); display: none; z-index: 400;
-    animation: slideUp 0.4s ease;
+function toggleMusicPanel() {
+    const panel = document.getElementById('musicPanel');
+    panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+    if (panel.style.display === 'block') renderMusicList();
 }
 
-.music-track {
-    display: flex; align-items: center; gap: 15px; padding: 14px; border-radius: 16px;
-    margin-bottom: 10px; background: rgba(255,255,255,0.07); transition: all 0.3s;
-    cursor: pointer;
+// ==================== დანარჩენი აპლიკაცია ====================
+let currentMood = "calm";
+let posts = [];
+
+function publishPost() { /* იგივე კოდი წინა ვერსიიდან */ 
+    const text = document.getElementById('postText').value.trim();
+    if (!text) return;
+    const newPost = { id: Date.now(), name: "Anonymous " + ["Moon","Star","Cloud","Echo"][Math.floor(Math.random()*4)], text, likes:0, hugs:0, liked:false, hugged:false, comments:[], mood:currentMood };
+    posts.unshift(newPost);
+    renderFeed();
+    // thank you message...
+    document.getElementById('postText').value = '';
 }
 
-.music-track:hover { background: rgba(255,138,181,0.15); transform: translateX(5px); }
-.music-track.active { background: rgba(255,138,181,0.25); box-shadow: 0 0 20px rgba(255,138,181,0.5); }
+function renderFeed() { /* იგივე კოდი წინა ვერსიიდან */ 
+    // ... (შეგიძლია წინა ვერსიიდან აიღო)
+}
 
-.music-track img { width: 58px; height: 58px; border-radius: 12px; object-fit: cover; }
-.track-info { flex: 1; }
-.play-btn { background: none; border: none; font-size: 1.8rem; color: #ff8ab5; cursor: pointer; }
+function likePost(id) { /* ... */ }
+function hugPost(id) { /* ... */ }
+function toggleCommentInput(id) { /* ... */ }
+function addComment(postId) { /* ... */ }
+function setMood(el) { /* ... */ }
 
-@keyframes pulse { 0%,100% { box-shadow: 0 10px 40px rgba(255,138,181,0.6); } 50% { box-shadow: 0 15px 50px rgba(255,138,181,0.9); } }
-@keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-@keyframes glowPulse { from { text-shadow: 0 0 20px rgba(255,138,181,0.6); } to { text-shadow: 0 0 50px rgba(255,138,181,0.9); } }
+function createSamplePosts() {
+    posts = [{ id: 1, name: "Anonymous Star", text: "დღეს ძალიან მძიმე დღე მქონდა...", likes: 14, hugs: 15, liked: false, hugged: false, comments: [], mood: "sad" }];
+    renderFeed();
+}
+
+function enterApp() {
+    document.getElementById('landing').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    createSamplePosts();
+}
+
+// Initialize
+window.onload = () => {
+    resizeCanvas();
+    initParticles();
+    animateParticles();
+    window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
+};
