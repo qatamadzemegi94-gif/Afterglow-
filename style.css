@@ -12,7 +12,13 @@ body {
     overflow-x: hidden;
 }
 
-#particles { position:fixed; top:0; left:0; width:100%; height:100%; z-index:1; pointer-events:none; }
+#particles {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 1;
+    pointer-events: none;
+}
 
 /* Landing */
 #landing {
@@ -66,14 +72,27 @@ header {
     z-index: 100;
 }
 
-.logo-small { font-family: 'Playfair Display', serif; color: #ff8ab5; font-size: 1.8rem; }
+.logo-small {
+    font-family: 'Playfair Display', serif;
+    color: #ff8ab5;
+    font-size: 1.8rem;
+}
 
-.nav { display: flex; gap: 2rem; }
+.nav {
+    display: flex;
+    gap: 2rem;
+}
+
 .nav-item {
     padding: 10px 20px;
     cursor: pointer;
     position: relative;
 }
+
+.nav-item.active {
+    color: #ff8ab5;
+}
+
 .nav-item.active::after {
     content: '';
     position: absolute;
@@ -86,12 +105,21 @@ header {
 }
 
 /* Pages */
-.page { display: none; padding: 30px 5%; }
-.page.active { display: block; }
+.page {
+    display: none;
+    padding: 40px 5%;
+    min-height: calc(100vh - 70px);
+}
 
-.content-wrapper { max-width: 700px; margin: 0 auto; }
+.page.active {
+    display: block;
+}
 
-/* Post Form */
+.content-wrapper {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
 .post-form {
     background: rgba(255,255,255,0.07);
     border-radius: 24px;
@@ -107,7 +135,7 @@ header {
     color: #e0d4ff;
     font-size: 1.1rem;
     resize: none;
-    height: 150px;
+    height: 160px;
     outline: none;
 }
 
@@ -119,25 +147,7 @@ header {
     color: white;
     font-weight: 600;
     cursor: pointer;
-}
-
-/* Music */
-.music-float-btn {
-    position: fixed;
-    bottom: 25px;
-    right: 25px;
-    width: 68px;
-    height: 68px;
-    background: linear-gradient(135deg, #6b4e9e, #ff8ab5);
-    color: white;
-    font-size: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    box-shadow: 0 10px 40px rgba(255,138,181,0.6);
-    cursor: pointer;
-    z-index: 300;
+    margin-top: 15px;
 }
 
 @keyframes glowPulse {
