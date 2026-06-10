@@ -20,7 +20,7 @@
     </div>
 
     <!-- Main App -->
-    <div id="app">
+    <div id="app" style="display: none;">
         <header>
             <h2 class="logo-small">AFTERGLOW</h2>
             <nav class="nav">
@@ -30,46 +30,27 @@
             </nav>
         </header>
 
-        <!-- HOME -->
         <section id="home-page" class="page active">
             <div class="content-wrapper">
-                <div class="motivational-slider" id="motivationalSlider">
-                    <p id="motivationalText">"შენს გრძნობებს მნიშვნელობა აქვს."</p>
-                </div>
-
                 <div class="post-form">
-                    <textarea id="postText" placeholder="ჩვენ გისმენთ განკიცხვის გარეშე. შეგიძლია მოგვიყვე ყველაფერი... 💜"></textarea>
-                    <div class="post-actions">
-                        <button onclick="publishPost()" class="post-btn">Share Anonymously 💜</button>
-                    </div>
+                    <textarea id="postText" placeholder="ჩვენ გისმენთ განკიცხვის გარეშე... 💜"></textarea>
+                    <button onclick="publishPost()" class="post-btn">Share Anonymously 💜</button>
                 </div>
             </div>
         </section>
 
-        <!-- FEED -->
         <section id="feed-page" class="page">
             <div class="content-wrapper">
                 <div class="feed" id="feed"></div>
             </div>
         </section>
 
-        <!-- MY SPACE -->
         <section id="space-page" class="page">
             <div class="content-wrapper">
-                <h2 style="text-align:center; color:#ff8ab5; margin:50px 0;">My Space</h2>
-                <p style="text-align:center; opacity:0.8;">აქ გამოჩნდება შენი პოსტები</p>
+                <h2 style="text-align:center; color:#ff8ab5; margin:60px 0;">My Space</h2>
+                <p style="text-align:center; opacity:0.7;">აქ გამოჩნდება შენი პოსტები</p>
             </div>
         </section>
-    </div>
-
-    <!-- Music -->
-    <div class="music-float-btn" onclick="toggleMusicPanel()">♫</div>
-    <div class="music-panel" id="musicPanel">
-        <div class="music-header">
-            <h3>🎵 Afterglow Playlist</h3>
-            <span onclick="toggleMusicPanel()" class="close-btn">✕</span>
-        </div>
-        <div id="musicList" class="music-list"></div>
     </div>
 
     <script src="script.js"></script>
