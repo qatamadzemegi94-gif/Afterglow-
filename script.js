@@ -1,6 +1,7 @@
 // Particles
 const canvas = document.getElementById('particles');
 const ctx = canvas.getContext('2d');
+let particles = [];
 
 function resizeCanvas() {
     canvas.width = window.innerWidth;
@@ -35,14 +36,13 @@ function initParticles() {
     for (let i = 0; i < 120; i++) particles.push(new Particle());
 }
 
-let particles = [];
 function animateParticles() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     particles.forEach(p => { p.update(); p.draw(); });
     requestAnimationFrame(animateParticles);
 }
 
-// Tab Navigation
+// Tab System
 function switchTab(n) {
     document.querySelectorAll('.nav-item').forEach((el, i) => {
         el.classList.toggle('active', i === n);
@@ -51,18 +51,18 @@ function switchTab(n) {
     document.getElementById(['home-page','feed-page','space-page'][n]).classList.add('active');
 }
 
-// Enter App
+// Enter App (მთავარი ფუნქცია)
 function enterApp() {
     const landing = document.getElementById('landing');
     const app = document.getElementById('app');
 
-    landing.style.transition = 'opacity 0.8s';
+    landing.style.transition = 'opacity 0.8s ease';
     landing.style.opacity = '0';
 
     setTimeout(() => {
         landing.style.display = 'none';
         app.style.display = 'block';
-        switchTab(0);
+        switchTab(0); // Home-ზე გადავიდეს
     }, 700);
 }
 
@@ -70,8 +70,13 @@ function enterApp() {
 function publishPost() {
     const text = document.getElementById('postText').value.trim();
     if (!text) return;
-    alert('პოსტი გამოქვეყნებულია 💜');
+    alert('პოსტი წარმატებით გამოქვეყნდა 💜');
     document.getElementById('postText').value = '';
+}
+
+// Music Panel
+function toggleMusicPanel() {
+    alert("🎵 მუსიკის პანელი მალე გააქტიურდება!");
 }
 
 // Initialize
