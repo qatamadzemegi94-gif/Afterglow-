@@ -1,141 +1,133 @@
-// Particles
-const canvas = document.getElementById('particles');
-const ctx = canvas.getContext('2d');
-let particles = [];
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@700&display=swap');
 
-function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+:root { --accent: #ff8ab5; }
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #0a0a1f, #1a0a2e, #2a1a3f);
+    color: #e0d4ff;
+    min-height: 100vh;
+    overflow-x: hidden;
 }
 
-class Particle {
-    constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 3 + 1;
-        this.speedX = Math.random() * 0.5 - 0.25;
-        this.speedY = Math.random() * 0.5 - 0.25;
-        this.opacity = Math.random() * 0.6 + 0.3;
-    }
-    update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
-        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
-    }
-    draw() {
-        ctx.fillStyle = `rgba(180, 140, 255, ${this.opacity})`;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-    }
+#particles { position:fixed; top:0; left:0; width:100%; height:100%; z-index:1; pointer-events:none; }
+
+/* Landing */
+#landing {
+    height:100vh; display:flex; align-items:center; justify-content:center; text-align:center; position:relative; z-index:2;
 }
 
-function initParticles() {
-    particles = [];
-    for (let i = 0; i < 120; i++) particles.push(new Particle());
+.logo {
+    font-family:'Playfair Display',serif; font-size:5.5rem; font-weight:700;
+    background:linear-gradient(90deg,#c4a1ff,#ff8ab5,#a1c4ff);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    animation:glowPulse 3s infinite alternate;
 }
 
-function animateParticles() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(p => { p.update(); p.draw(); });
-    requestAnimationFrame(animateParticles);
+.glow-btn {
+    padding:18px 48px; font-size:1.3rem; font-weight:600;
+    background:rgba(255,255,255,0.1); border:2px solid rgba(255,138,181,0.6);
+    border-radius:50px; color:white; cursor:pointer; box-shadow:0 0 30px rgba(255,138,181,0.5);
+    transition:all 0.4s;
 }
 
-// Tab System
-function switchTab(n) {
-    document.querySelectorAll('.nav-item').forEach((el, i) => {
-        el.classList.toggle('active', i === n);
-    });
+.glow-btn:hover { transform:translateY(-5px) scale(1.05); box-shadow:0 0 50px rgba(255,138,181,0.8); }
 
-    document.querySelectorAll('.page').forEach(page => {
-        page.classList.remove('active');
-    });
-
-    document.getElementById(['home-page', 'feed-page', 'space-page'][n]).classList.add('active');
+/* Header */
+header {
+    background:rgba(10,10,31,0.95); backdrop-filter:blur(15px);
+    padding:1rem 5%; display:flex; align-items:center; justify-content:space-between;
+    position:sticky; top:0; z-index:100;
 }
 
-// Music
-let currentAudio = null;
-let currentTrackIndex = -1;
+.logo-small { font-family:'Playfair Display',serif; color:#ff8ab5; font-size:1.8rem; }
 
-const musicTracks = [
-    { title: "After Dark", artist: "Mr.Kitty", src: "music/after-dark.mp3" },
-    { title: "Skyfall", artist: "Adele", src: "music/skyfall.mp3" },
-    { title: "Blinding Lights", artist: "The Weeknd", src: "music/blinding-lights.mp3" },
-    { title: "Sweater Weather", artist: "The Neighbourhood", src: "music/sweater-weather.mp3" }
-];
-
-function renderMusicList() {
-    const container = document.getElementById('musicList');
-    container.innerHTML = '';
-    musicTracks.forEach((track, i) => {
-        const active = i === currentTrackIndex ? 'active' : '';
-        const div = document.createElement('div');
-        div.className = `music-track ${active}`;
-        div.innerHTML = `
-            <div class="track-info">
-                <div class="track-title">${track.title}</div>
-                <div style="opacity:0.7; font-size:0.9rem;">${track.artist}</div>
-            </div>
-            <button class="play-btn" onclick="playTrack(${i}); event.stopImmediatePropagation()">
-                ${active ? '❚❚' : '▶'}
-            </button>
-        `;
-        container.appendChild(div);
-    });
+.nav { display:flex; gap:2rem; }
+.nav-item {
+    padding:10px 20px; cursor:pointer; position:relative; transition:0.3s;
+}
+.nav-item.active { color:#ff8ab5; }
+.nav-item.active::after {
+    content:''; position:absolute; bottom:-6px; left:50%; transform:translateX(-50%);
+    width:50%; height:3px; background:#ff8ab5; border-radius:3px;
 }
 
-function playTrack(i) {
-    if (currentTrackIndex === i && currentAudio) {
-        currentAudio.pause();
-        currentTrackIndex = -1;
-        renderMusicList();
-        return;
-    }
-    if (currentAudio) currentAudio.pause();
-    currentAudio = new Audio(musicTracks[i].src);
-    currentAudio.play().then(() => {
-        currentTrackIndex = i;
-        renderMusicList();
-    }).catch(() => alert("მუსიკა ვერ ჩაიტვირთა"));
+/* Pages */
+.page { display:none; padding:30px 5%; }
+.page.active { display:block; }
+
+.content-wrapper { max-width:700px; margin:0 auto; }
+
+/* Motivational Slider */
+.motivational-slider {
+    background:rgba(255,255,255,0.08); padding:20px; border-radius:20px;
+    text-align:center; font-style:italic; margin-bottom:25px; min-height:70px;
+    display:flex; align-items:center; justify-content:center;
 }
 
-function toggleMusicPanel() {
-    const panel = document.getElementById('musicPanel');
-    panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
-    if (panel.style.display === 'block') renderMusicList();
+/* Post Form */
+.post-form {
+    background:rgba(255,255,255,0.07); border-radius:24px; padding:25px;
+    backdrop-filter:blur(12px); border:1px solid rgba(255,138,181,0.15);
 }
 
-// Other Functions
-let currentMood = "calm";
-
-function publishPost() {
-    const text = document.getElementById('postText').value.trim();
-    if (!text) return;
-    alert("პოსტი გამოქვეყნებულია! 💜");
-    document.getElementById('postText').value = '';
+.post-form textarea {
+    width:100%; background:transparent; border:none; color:#e0d4ff;
+    font-size:1.1rem; resize:none; height:140px; outline:none;
 }
 
-function setMood(el) {
-    document.querySelectorAll('.mood-option').forEach(m => m.classList.remove('active'));
-    el.classList.add('active');
-    currentMood = el.dataset.mood;
+.emoji-btn, .post-btn {
+    padding:10px 18px; border-radius:50px; cursor:pointer; font-size:1.3rem;
+    background:rgba(255,138,181,0.2); border:none; color:white;
 }
 
-function enterApp() {
-    document.getElementById('landing').style.display = 'none';
-    document.getElementById('app').style.display = 'block';
-    switchTab(0);
+.post-btn { background:linear-gradient(90deg,#ff8ab5,#c4a1ff); }
+
+/* Emoji Picker */
+.emoji-picker {
+    display:none; position:absolute; background:rgba(20,15,45,0.95);
+    padding:15px; border-radius:16px; gap:10px; flex-wrap:wrap;
+    box-shadow:0 10px 30px rgba(0,0,0,0.6); z-index:100;
+    max-width:300px;
 }
 
-// Init
-window.onload = () => {
-    resizeCanvas();
-    initParticles();
-    animateParticles();
-    window.addEventListener('resize', () => {
-        resizeCanvas();
-        initParticles();
-    });
-};
+.emoji-picker span {
+    font-size:1.8rem; cursor:pointer; padding:8px; border-radius:12px;
+    transition:0.2s;
+}
+
+.emoji-picker span:hover { background:rgba(255,138,181,0.3); }
+
+/* Music */
+.music-float-btn {
+    position:fixed; bottom:25px; right:25px; width:68px; height:68px;
+    background:linear-gradient(135deg,#6b4e9e,#ff8ab5); color:white;
+    font-size:2rem; display:flex; align-items:center; justify-content:center;
+    border-radius:50%; box-shadow:0 10px 40px rgba(255,138,181,0.6);
+    cursor:pointer; z-index:300;
+}
+
+.music-panel {
+    position:fixed; bottom:110px; right:25px; width:380px;
+    background:rgba(15,10,45,0.97); backdrop-filter:blur(25px);
+    border-radius:24px; padding:20px; border:1px solid rgba(255,138,181,0.4);
+    display:none; z-index:400;
+}
+
+.music-track {
+    display:flex; align-items:center; gap:15px; padding:14px;
+    border-radius:16px; margin-bottom:10px; background:rgba(255,255,255,0.07);
+    cursor:pointer; transition:0.3s;
+}
+
+.music-track:hover { background:rgba(255,138,181,0.15); }
+.music-track.active { background:rgba(255,138,181,0.25); box-shadow:0 0 20px rgba(255,138,181,0.5); }
+
+.play-btn { background:none; border:none; font-size:1.8rem; color:#ff8ab5; cursor:pointer; }
+
+@keyframes glowPulse {
+    from { text-shadow:0 0 20px rgba(255,138,181,0.6); }
+    to { text-shadow:0 0 50px rgba(255,138,181,0.9); }
+}
