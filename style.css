@@ -1,8 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@700&display=swap');
 
-:root { --accent: #ff8ab5; }
+:root {
+    --accent: #ff8ab5;
+}
 
-* { margin:0; padding:0; box-sizing:border-box; }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 body {
     font-family: 'Inter', sans-serif;
@@ -87,6 +93,7 @@ header {
     padding: 10px 20px;
     cursor: pointer;
     position: relative;
+    transition: 0.3s;
 }
 
 .nav-item.active {
@@ -148,6 +155,25 @@ header {
     font-weight: 600;
     cursor: pointer;
     margin-top: 15px;
+}
+
+/* Music */
+.music-float-btn {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    width: 68px;
+    height: 68px;
+    background: linear-gradient(135deg, #6b4e9e, #ff8ab5);
+    color: white;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    box-shadow: 0 10px 40px rgba(255,138,181,0.6);
+    cursor: pointer;
+    z-index: 300;
 }
 
 @keyframes glowPulse {
