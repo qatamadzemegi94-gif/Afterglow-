@@ -42,6 +42,21 @@ function animateParticles() {
     requestAnimationFrame(animateParticles);
 }
 
+// ==================== TAB NAVIGATION ====================
+function switchTab(tab) {
+    document.querySelectorAll('.nav-item').forEach((item, i) => {
+        item.classList.toggle('active', i === tab);
+    });
+
+    document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+    });
+
+    if (tab === 0) document.getElementById('home-page').classList.add('active');
+    if (tab === 1) document.getElementById('feed-page').classList.add('active');
+    if (tab === 2) document.getElementById('space-page').classList.add('active');
+}
+
 // ==================== MUSIC ====================
 let currentAudio = null;
 let currentTrackIndex = -1;
@@ -76,14 +91,12 @@ function renderMusicList() {
 
 function playTrack(index) {
     const track = musicTracks[index];
-
     if (currentTrackIndex === index && currentAudio) {
         currentAudio.pause();
         currentTrackIndex = -1;
         renderMusicList();
         return;
     }
-
     if (currentAudio) currentAudio.pause();
 
     currentAudio = new Audio(track.src);
@@ -91,9 +104,7 @@ function playTrack(index) {
     currentAudio.play().then(() => {
         currentTrackIndex = index;
         renderMusicList();
-    }).catch(() => {
-        alert(`შეცდომა: ${track.title}\nშეამოწმე რომ mp3 ფაილი არსებობს "music" საქაღალდეში`);
-    });
+    }).catch(() => alert(`შეცდომა: ${track.title}`));
 }
 
 function toggleMusicPanel() {
@@ -102,7 +113,7 @@ function toggleMusicPanel() {
     if (panel.style.display === 'block') renderMusicList();
 }
 
-// ==================== APP ====================
+// ==================== OTHER FUNCTIONS ====================
 let currentMood = "calm";
 let posts = [];
 
@@ -116,9 +127,6 @@ function publishPost() {
         text: text,
         likes: 0,
         hugs: 0,
-        liked: false,
-        hugged: false,
-        comments: [],
         mood: currentMood
     };
 
@@ -137,7 +145,12 @@ function publishPost() {
 function renderFeed() {
     const feed = document.getElementById('feed');
     feed.innerHTML = '';
-    // შეგიძლია მოგვიანებით გააფართოვო
+    posts.forEach(post => {
+        const div = document.createElement('div');
+        div.className = 'post-card';
+        div.innerHTML = `<div class="post-text">${post.text}</div>`;
+        feed.appendChild(div);
+    });
 }
 
 function setMood(el) {
@@ -149,6 +162,7 @@ function setMood(el) {
 function enterApp() {
     document.getElementById('landing').style.display = 'none';
     document.getElementById('app').style.display = 'block';
+    switchTab(0); // Home-ზე გადავიდეს
 }
 
 // Initialize
