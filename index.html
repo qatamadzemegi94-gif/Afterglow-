@@ -21,7 +21,6 @@
 
     <!-- Main App -->
     <div id="app">
-        <!-- Navbar -->
         <header>
             <h2 class="logo-small">AFTERGLOW</h2>
             <nav class="nav">
@@ -34,23 +33,28 @@
         <!-- HOME -->
         <section id="home-page" class="page active">
             <div class="content-wrapper">
-                <div class="mood-selector">
-                    <div class="mood-option" data-mood="hopeful" onclick="setMood(this)">🌈</div>
-                    <div class="mood-option" data-mood="sad" onclick="setMood(this)">😔</div>
-                    <div class="mood-option" data-mood="angry" onclick="setMood(this)">😡</div>
-                    <div class="mood-option" data-mood="overwhelmed" onclick="setMood(this)">😭</div>
-                    <div class="mood-option" data-mood="calm" onclick="setMood(this)">🌙</div>
-                </div>
-
-                <div class="quote-section">
-                    <p id="dailyQuote">"ჩვენ გისმენთ. შენ არ ხარ მარტო."</p>
+                <!-- Motivational Slider -->
+                <div class="motivational-slider" id="motivationalSlider">
+                    <p id="motivationalText">"შენს გრძნობებს მნიშვნელობა აქვს."</p>
                 </div>
 
                 <div class="post-form">
-                    <textarea id="postText" placeholder="ჩვენ გისმენთ განკიცხვის გარეშე. შეგიძლია მოგვიყვე ყველაფერი... 💜"></textarea>
+                    <textarea id="postText" placeholder="ჩვენ გისმენთ განკიცხვის გარეშე... 💜"></textarea>
                     <div class="post-actions">
+                        <button onclick="toggleEmojiPicker()" class="emoji-btn">😀</button>
                         <button onclick="publishPost()" class="post-btn">Share Anonymously 💜</button>
                     </div>
+                </div>
+
+                <!-- Emoji Picker -->
+                <div id="emojiPicker" class="emoji-picker">
+                    <span onclick="addEmojiToPost(this)">😊</span>
+                    <span onclick="addEmojiToPost(this)">❤️</span>
+                    <span onclick="addEmojiToPost(this)">😢</span>
+                    <span onclick="addEmojiToPost(this)">😡</span>
+                    <span onclick="addEmojiToPost(this)">🌈</span>
+                    <span onclick="addEmojiToPost(this)">🫂</span>
+                    <span onclick="addEmojiToPost(this)">✨</span>
                 </div>
             </div>
         </section>
@@ -66,7 +70,7 @@
         <section id="space-page" class="page">
             <div class="content-wrapper">
                 <h2 style="text-align:center; color:#ff8ab5; margin:40px 0;">My Space</h2>
-                <p style="text-align:center; opacity:0.8;">აქ მოგვიანებით გამოჩნდება შენი პოსტები და სტატისტიკა 💜</p>
+                <div class="feed" id="my-posts"></div>
             </div>
         </section>
     </div>
